@@ -20,20 +20,32 @@ import { useState } from "react";
 import { toast } from "sonner";
 import type { Product } from "../backend.d";
 import Footer from "../components/Footer";
+<<<<<<< HEAD
 import { Navbar } from "../components/Navbar";
 import { useCart } from "../context/CartContext";
 import { MOCK_PRODUCTS } from "../data/mockData";
 import { api } from "../lib/api";
+=======
+import Navbar from "../components/Navbar";
+import { useCart } from "../context/CartContext";
+import { MOCK_PRODUCTS } from "../data/mockData";
+import { useActor } from "../hooks/useActor";
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 
 export default function ProductDetailPage() {
   const { id } = useParams({ from: "/product/$id" });
   const navigate = useNavigate();
   const { addItem } = useCart();
+<<<<<<< HEAD
+=======
+  const { actor, isFetching } = useActor();
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [imageIndex, setImageIndex] = useState(0);
 
+<<<<<<< HEAD
   const { data: product, isLoading } = useQuery<any | null>({
     queryKey: ["product", id],
     queryFn: async () => {
@@ -43,6 +55,25 @@ export default function ProductDetailPage() {
         return MOCK_PRODUCTS.find((p) => (p._id || p.id || "").toString() === id) || null;
       }
     },
+=======
+  const productId = id ? BigInt(id) : 1n;
+
+  const { data: product, isLoading } = useQuery<Product | null>({
+    queryKey: ["product", id],
+    queryFn: async () => {
+      if (!actor) {
+        return MOCK_PRODUCTS.find((p) => p.id === productId) || null;
+      }
+      try {
+        const res = await actor.getProduct(productId);
+        if (res) return res;
+        return MOCK_PRODUCTS.find((p) => p.id === productId) || null;
+      } catch {
+        return MOCK_PRODUCTS.find((p) => p.id === productId) || null;
+      }
+    },
+    enabled: !isFetching,
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   });
 
   if (isLoading) {
@@ -85,6 +116,7 @@ export default function ProductDetailPage() {
     );
   }
 
+<<<<<<< HEAD
   const originalPrice = Number(product.originalPrice || 0);
   const discountedPrice = Number(product.discountedPrice || 0);
 
@@ -95,6 +127,16 @@ export default function ProductDetailPage() {
   const images = (product.images && product.images.length > 0)
     ? product.images
     : (product.imageUrls && product.imageUrls.length > 0)
+=======
+  const discount = Math.round(
+    ((Number(product.originalPrice) - Number(product.discountedPrice)) /
+      Number(product.originalPrice)) *
+      100,
+  );
+
+  const images =
+    product.imageUrls.length > 0
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
       ? product.imageUrls
       : ["https://picsum.photos/seed/jute/600/600"];
 
@@ -103,6 +145,7 @@ export default function ProductDetailPage() {
       toast.error("This product is out of stock");
       return;
     }
+<<<<<<< HEAD
     const size = selectedSize || (product.sizes && product.sizes[0]) || "";
     const color = selectedColor || (product.colors && product.colors[0]) || "";
 
@@ -116,6 +159,21 @@ export default function ProductDetailPage() {
       imageUrl: images[0] || "",
     });
     toast.success(`${product.name || "Product"} added to cart!`);
+=======
+    const size = selectedSize || product.sizes[0] || "";
+    const color = selectedColor || product.colors[0] || "";
+
+    addItem({
+      productId: product.id,
+      quantity: 1,
+      selectedSize: size,
+      selectedColor: color,
+      name: product.name,
+      price: Number(product.discountedPrice),
+      imageUrl: product.imageUrls[0] || "",
+    });
+    toast.success(`${product.name} added to cart!`);
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   };
 
   const handleBuyNow = () => {
@@ -130,6 +188,7 @@ export default function ProductDetailPage() {
       <main className="flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Back */}
+<<<<<<< HEAD
           <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
             <Button
               variant="ghost"
@@ -157,6 +216,32 @@ export default function ProductDetailPage() {
                   src={images[imageIndex]}
                   alt={product.name || "Product"}
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+=======
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate({ to: "/" })}
+            className="mb-6 gap-2 font-ui"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Shop
+          </Button>
+
+          <div className="grid md:grid-cols-2 gap-10 lg:gap-16">
+            {/* Images */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="space-y-4"
+            >
+              {/* Main image */}
+              <div className="relative aspect-square rounded-2xl overflow-hidden bg-muted shadow-jute">
+                <img
+                  src={images[imageIndex]}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                 />
                 {discount > 0 && (
                   <div className="absolute top-4 left-4">
@@ -211,10 +296,18 @@ export default function ProductDetailPage() {
                       type="button"
                       key={img}
                       onClick={() => setImageIndex(idx)}
+<<<<<<< HEAD
                       className={`h-16 w-16 rounded-lg overflow-hidden border-2 transition-all ${idx === imageIndex
                         ? "border-primary"
                         : "border-border opacity-60 hover:opacity-100"
                         }`}
+=======
+                      className={`h-16 w-16 rounded-lg overflow-hidden border-2 transition-all ${
+                        idx === imageIndex
+                          ? "border-primary"
+                          : "border-border opacity-60 hover:opacity-100"
+                      }`}
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                     >
                       <img
                         src={img}
@@ -249,6 +342,7 @@ export default function ProductDetailPage() {
               {/* Price */}
               <div className="flex items-baseline gap-3">
                 <span className="font-display text-3xl font-bold text-jute-olive">
+<<<<<<< HEAD
                   ₹{discountedPrice}
                 </span>
                 {originalPrice !== discountedPrice && (
@@ -258,6 +352,20 @@ export default function ProductDetailPage() {
                     </span>
                     <Badge className="bg-destructive/10 text-destructive border-destructive/20 font-ui font-semibold">
                       Save ₹{originalPrice - discountedPrice}
+=======
+                  ₹{Number(product.discountedPrice)}
+                </span>
+                {Number(product.originalPrice) !==
+                  Number(product.discountedPrice) && (
+                  <>
+                    <span className="text-xl text-muted-foreground line-through">
+                      ₹{Number(product.originalPrice)}
+                    </span>
+                    <Badge className="bg-destructive/10 text-destructive border-destructive/20 font-ui font-semibold">
+                      Save ₹
+                      {Number(product.originalPrice) -
+                        Number(product.discountedPrice)}
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                     </Badge>
                   </>
                 )}
@@ -285,24 +393,44 @@ export default function ProductDetailPage() {
               </div>
 
               {/* Size Selector */}
+<<<<<<< HEAD
               {product.sizes && product.sizes.length > 0 && (
+=======
+              {product.sizes.length > 0 && (
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                 <div>
                   <div className="font-ui font-semibold text-sm mb-2">
                     Size:{" "}
                     <span className="font-normal text-muted-foreground">
+<<<<<<< HEAD
                       {selectedSize || (product.sizes && product.sizes[0])}
                     </span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {product.sizes.map((size: string) => (
+=======
+                      {selectedSize || product.sizes[0]}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {product.sizes.map((size) => (
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                       <button
                         type="button"
                         key={size}
                         onClick={() => setSelectedSize(size)}
+<<<<<<< HEAD
                         className={`px-3 py-1.5 rounded-lg border-2 text-sm font-ui transition-all ${(selectedSize || product.sizes[0]) === size
                           ? "border-primary bg-primary/10 text-primary font-semibold"
                           : "border-border hover:border-primary/50"
                           }`}
+=======
+                        className={`px-3 py-1.5 rounded-lg border-2 text-sm font-ui transition-all ${
+                          (selectedSize || product.sizes[0]) === size
+                            ? "border-primary bg-primary/10 text-primary font-semibold"
+                            : "border-border hover:border-primary/50"
+                        }`}
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                       >
                         {size}
                       </button>
@@ -312,24 +440,44 @@ export default function ProductDetailPage() {
               )}
 
               {/* Color Selector */}
+<<<<<<< HEAD
               {product.colors && product.colors.length > 0 && (
+=======
+              {product.colors.length > 0 && (
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                 <div>
                   <div className="font-ui font-semibold text-sm mb-2">
                     Color:{" "}
                     <span className="font-normal text-muted-foreground">
+<<<<<<< HEAD
                       {selectedColor || (product.colors && product.colors[0])}
                     </span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {product.colors.map((color: string) => (
+=======
+                      {selectedColor || product.colors[0]}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {product.colors.map((color) => (
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                       <button
                         type="button"
                         key={color}
                         onClick={() => setSelectedColor(color)}
+<<<<<<< HEAD
                         className={`px-3 py-1.5 rounded-lg border-2 text-sm font-ui transition-all ${(selectedColor || product.colors[0]) === color
                           ? "border-primary bg-primary/10 text-primary font-semibold"
                           : "border-border hover:border-primary/50"
                           }`}
+=======
+                        className={`px-3 py-1.5 rounded-lg border-2 text-sm font-ui transition-all ${
+                          (selectedColor || product.colors[0]) === color
+                            ? "border-primary bg-primary/10 text-primary font-semibold"
+                            : "border-border hover:border-primary/50"
+                        }`}
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                       >
                         {color}
                       </button>

@@ -12,13 +12,26 @@ import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+<<<<<<< HEAD
 export function Navbar() {
   const { totalCount } = useCart();
   const { isOwner, isLoggedIn, logout, role } = useAuth();
+=======
+import { useInternetIdentity } from "../hooks/useInternetIdentity";
+
+export default function Navbar() {
+  const { totalCount } = useCart();
+  const { isOwner, isLoggedIn, logout, role } = useAuth();
+  const { clear } = useInternetIdentity();
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleLogout = () => {
+<<<<<<< HEAD
+=======
+    clear();
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     logout();
     navigate({ to: "/" });
   };

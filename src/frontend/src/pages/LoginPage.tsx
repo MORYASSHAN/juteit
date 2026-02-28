@@ -9,6 +9,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { UserRole } from "../backend.d";
 import { useAuth } from "../context/AuthContext";
+<<<<<<< HEAD
 import { api } from "../lib/api";
 
 export default function LoginPage() {
@@ -23,6 +24,20 @@ export default function LoginPage() {
     name: "",
     email: "",
     password: "",
+=======
+import { useActor } from "../hooks/useActor";
+import { useInternetIdentity } from "../hooks/useInternetIdentity";
+
+export default function LoginPage() {
+  const navigate = useNavigate();
+  const { login, isLoggingIn } = useInternetIdentity();
+  const { setRole } = useAuth();
+  const { actor } = useActor();
+
+  const [profileForm, setProfileForm] = useState({
+    name: "",
+    email: "",
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     phone: "",
     address: "",
   });
@@ -30,6 +45,7 @@ export default function LoginPage() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleLogin = async () => {
+<<<<<<< HEAD
     if (!loginForm.email || !loginForm.password) {
       toast.error("Please enter email and password");
       return;
@@ -42,18 +58,52 @@ export default function LoginPage() {
       navigate({ to: data.role === 'owner' ? "/owner" : "/" });
     } catch (error: any) {
       toast.error(error.message || "Login failed");
+=======
+    setIsProcessing(true);
+    try {
+      await login();
+      if (actor) {
+        try {
+          const isAdmin = await actor.isCallerAdmin();
+          if (isAdmin) {
+            setRole(UserRole.admin);
+            toast.success("Welcome back, Owner!");
+            navigate({ to: "/owner" });
+          } else {
+            setRole(UserRole.user);
+            toast.success("Welcome back!");
+            navigate({ to: "/" });
+          }
+        } catch {
+          setRole(UserRole.user);
+          toast.success("Logged in successfully!");
+          navigate({ to: "/" });
+        }
+      } else {
+        setRole(UserRole.user);
+        toast.success("Logged in successfully!");
+        navigate({ to: "/" });
+      }
+    } catch {
+      toast.error("Login failed. Please try again.");
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     } finally {
       setIsProcessing(false);
     }
   };
 
   const handleSignUp = async () => {
+<<<<<<< HEAD
     if (!profileForm.name || !profileForm.email || !profileForm.password) {
+=======
+    if (!profileForm.name || !profileForm.email) {
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
       toast.error("Please fill in required fields");
       return;
     }
     setIsProcessing(true);
     try {
+<<<<<<< HEAD
       const data = await api.post('/auth/register', {
         ...profileForm,
         role: selectedRole
@@ -63,16 +113,47 @@ export default function LoginPage() {
       navigate({ to: selectedRole === "owner" ? "/owner" : "/" });
     } catch (error: any) {
       toast.error(error.message || "Sign up failed");
+=======
+      await login();
+      if (actor) {
+        try {
+          await actor.saveCallerUserProfile({
+            name: profileForm.name,
+            email: profileForm.email,
+            phone: profileForm.phone,
+            address: profileForm.address,
+          });
+        } catch {
+          // Profile save failed, continue
+        }
+      }
+
+      if (selectedRole === "owner") {
+        setRole(UserRole.admin);
+        toast.success("Account created! Welcome, Owner.");
+        navigate({ to: "/owner" });
+      } else {
+        setRole(UserRole.user);
+        toast.success("Account created! Welcome to JuteIt.");
+        navigate({ to: "/" });
+      }
+    } catch {
+      toast.error("Sign up failed. Please try again.");
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     } finally {
       setIsProcessing(false);
     }
   };
 
+<<<<<<< HEAD
   const handleOAuthLogin = (provider: string) => {
     toast.info(`${provider} login will be available once OAuth is configured.`);
   };
 
   const loading = isProcessing;
+=======
+  const loading = isLoggingIn || isProcessing;
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-100 via-amber-50 to-stone-200 flex flex-col">
@@ -126,6 +207,7 @@ export default function LoginPage() {
                 {/* Login */}
                 <TabsContent value="login">
                   <div className="space-y-4">
+<<<<<<< HEAD
                     <div className="space-y-3">
                       <div>
                         <Label className="text-sm font-medium mb-1 block">Email</Label>
@@ -147,6 +229,11 @@ export default function LoginPage() {
                       </div>
                     </div>
 
+=======
+                    <p className="text-sm text-muted-foreground text-center">
+                      Use Internet Identity to securely access your account.
+                    </p>
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                     <Button
                       onClick={handleLogin}
                       disabled={loading}
@@ -156,6 +243,7 @@ export default function LoginPage() {
                       {loading ? (
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+<<<<<<< HEAD
                           Logging in...
                         </>
                       ) : (
@@ -180,6 +268,17 @@ export default function LoginPage() {
                         Apple/iOS
                       </Button>
                     </div>
+=======
+                          Connecting...
+                        </>
+                      ) : (
+                        <>
+                          <User className="h-4 w-4 mr-2" />
+                          Login with Internet Identity
+                        </>
+                      )}
+                    </Button>
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                   </div>
                 </TabsContent>
 
@@ -195,10 +294,18 @@ export default function LoginPage() {
                         <button
                           type="button"
                           onClick={() => setSelectedRole("buyer")}
+<<<<<<< HEAD
                           className={`p-3 rounded-xl border-2 text-center transition-all ${selectedRole === "buyer"
                             ? "border-primary bg-primary/10"
                             : "border-border hover:border-primary/50"
                             }`}
+=======
+                          className={`p-3 rounded-xl border-2 text-center transition-all ${
+                            selectedRole === "buyer"
+                              ? "border-primary bg-primary/10"
+                              : "border-border hover:border-primary/50"
+                          }`}
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                         >
                           <div className="text-xl mb-1">🛍️</div>
                           <div className="text-sm font-ui font-medium">
@@ -211,10 +318,18 @@ export default function LoginPage() {
                         <button
                           type="button"
                           onClick={() => setSelectedRole("owner")}
+<<<<<<< HEAD
                           className={`p-3 rounded-xl border-2 text-center transition-all ${selectedRole === "owner"
                             ? "border-primary bg-primary/10"
                             : "border-border hover:border-primary/50"
                             }`}
+=======
+                          className={`p-3 rounded-xl border-2 text-center transition-all ${
+                            selectedRole === "owner"
+                              ? "border-primary bg-primary/10"
+                              : "border-border hover:border-primary/50"
+                          }`}
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                         >
                           <div className="text-xl mb-1">🏪</div>
                           <div className="text-sm font-ui font-medium">
@@ -270,6 +385,7 @@ export default function LoginPage() {
 
                     <div>
                       <Label className="font-ui text-sm font-medium mb-1.5 block">
+<<<<<<< HEAD
                         Password *
                       </Label>
                       <div className="relative">
@@ -290,6 +406,8 @@ export default function LoginPage() {
 
                     <div>
                       <Label className="font-ui text-sm font-medium mb-1.5 block">
+=======
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                         Phone
                       </Label>
                       <div className="relative">

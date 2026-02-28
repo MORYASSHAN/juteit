@@ -15,17 +15,26 @@ interface ProductCardProps {
 export default function ProductCard({ product, index = 0 }: ProductCardProps) {
   const { addItem } = useCart();
 
+<<<<<<< HEAD
   const originalPrice = Number(product.originalPrice || 0);
   const discountedPrice = Number(product.discountedPrice || 0);
 
   const discount = originalPrice > 0
     ? Math.round(((originalPrice - discountedPrice) / originalPrice) * 100)
     : 0;
+=======
+  const discount = Math.round(
+    ((Number(product.originalPrice) - Number(product.discountedPrice)) /
+      Number(product.originalPrice)) *
+      100,
+  );
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!product.inStock) return;
+<<<<<<< HEAD
 
     const productId = product._id || product.id || "";
     if (!productId) {
@@ -43,6 +52,18 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       imageUrl: (product.imageUrls && product.imageUrls[0]) || "",
     });
     toast.success(`${product.name || "Product"} added to cart!`);
+=======
+    addItem({
+      productId: product.id,
+      quantity: 1,
+      selectedSize: product.sizes[0] || "",
+      selectedColor: product.colors[0] || "",
+      name: product.name,
+      price: Number(product.discountedPrice),
+      imageUrl: product.imageUrls[0] || "",
+    });
+    toast.success(`${product.name} added to cart!`);
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   };
 
   return (
@@ -53,7 +74,11 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       whileHover={{ y: -4 }}
       className="group"
     >
+<<<<<<< HEAD
       <Link to="/product/$id" params={{ id: (product._id || product.id || "").toString() }}>
+=======
+      <Link to="/product/$id" params={{ id: product.id.toString() }}>
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
         <div className="bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-jute transition-all duration-300 border border-border flex flex-col">
           {/* Image */}
           <div className="relative overflow-hidden aspect-square bg-muted">
@@ -107,10 +132,17 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               </span>
               {Number(product.originalPrice) !==
                 Number(product.discountedPrice) && (
+<<<<<<< HEAD
                   <span className="text-sm text-muted-foreground line-through">
                     ₹{Number(product.originalPrice)}
                   </span>
                 )}
+=======
+                <span className="text-sm text-muted-foreground line-through">
+                  ₹{Number(product.originalPrice)}
+                </span>
+              )}
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
             </div>
 
             {/* Add to Cart */}

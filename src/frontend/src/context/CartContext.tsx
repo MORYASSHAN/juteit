@@ -2,7 +2,11 @@ import type React from "react";
 import { createContext, useCallback, useContext, useState } from "react";
 
 export interface CartContextItem {
+<<<<<<< HEAD
   productId: string;
+=======
+  productId: bigint;
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   quantity: number;
   selectedSize: string;
   selectedColor: string;
@@ -14,8 +18,13 @@ export interface CartContextItem {
 interface CartContextValue {
   items: CartContextItem[];
   addItem: (item: CartContextItem) => void;
+<<<<<<< HEAD
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
+=======
+  removeItem: (productId: bigint) => void;
+  updateQuantity: (productId: bigint, quantity: number) => void;
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   clearCart: () => void;
   totalCount: number;
   totalAmount: number;
@@ -40,11 +49,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+<<<<<<< HEAD
   const removeItem = useCallback((productId: string) => {
     setItems((prev) => prev.filter((i) => i.productId !== productId));
   }, []);
 
   const updateQuantity = useCallback((productId: string, quantity: number) => {
+=======
+  const removeItem = useCallback((productId: bigint) => {
+    setItems((prev) => prev.filter((i) => i.productId !== productId));
+  }, []);
+
+  const updateQuantity = useCallback((productId: bigint, quantity: number) => {
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     if (quantity <= 0) {
       setItems((prev) => prev.filter((i) => i.productId !== productId));
     } else {

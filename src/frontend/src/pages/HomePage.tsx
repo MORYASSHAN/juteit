@@ -9,6 +9,7 @@ import { Suspense, lazy, useState } from "react";
 import type { OfferBanner, Product } from "../backend.d";
 import BannerCarousel from "../components/BannerCarousel";
 import Footer from "../components/Footer";
+<<<<<<< HEAD
 import { Navbar } from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
 import { MOCK_BANNERS, MOCK_PRODUCTS } from "../data/mockData";
@@ -27,21 +28,65 @@ const FEATURES = [
   { title: "Eco-Friendly", icon: Leaf, desc: "100% natural materials" },
   { title: "Recyclable", icon: Recycle, desc: "Good for the planet" },
   { title: "Handcrafted", icon: Heart, desc: "Made with local love" },
+=======
+import Navbar from "../components/Navbar";
+import ProductCard from "../components/ProductCard";
+import { MOCK_BANNERS, MOCK_PRODUCTS } from "../data/mockData";
+import { useActor } from "../hooks/useActor";
+
+const JuteScene3D = lazy(() => import("../components/JuteScene3D"));
+
+const CATEGORIES = [
+  { name: "Bags", icon: "👜", desc: "Eco totes & shopping bags" },
+  { name: "Home Decor", icon: "🏠", desc: "Placemats, wall hangings" },
+  { name: "Storage", icon: "🧺", desc: "Baskets & organizers" },
+  { name: "Accessories", icon: "💼", desc: "Sleeves & small goods" },
+];
+
+const FEATURES = [
+  {
+    icon: Leaf,
+    title: "100% Natural",
+    desc: "All products made from genuine natural jute fiber",
+  },
+  {
+    icon: Recycle,
+    title: "Eco-Friendly",
+    desc: "Sustainable, biodegradable, and planet-positive",
+  },
+  {
+    icon: Heart,
+    title: "Handcrafted",
+    desc: "Made by skilled artisans with love and care",
+  },
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 ];
 
 export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState<string>("All");
+<<<<<<< HEAD
 
   const { data: products = MOCK_PRODUCTS, isLoading: productsLoading } = useQuery<any[]>({
     queryKey: ["products"],
     queryFn: async () => {
       try {
         const res = await api.get('/products');
+=======
+  const { actor, isFetching } = useActor();
+
+  const { data: products = MOCK_PRODUCTS } = useQuery<Product[]>({
+    queryKey: ["products"],
+    queryFn: async () => {
+      if (!actor) return MOCK_PRODUCTS;
+      try {
+        const res = await actor.listProducts();
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
         return res.length > 0 ? res : MOCK_PRODUCTS;
       } catch {
         return MOCK_PRODUCTS;
       }
     },
+<<<<<<< HEAD
   });
 
   const { data: banners = MOCK_BANNERS, isLoading: bannersLoading } = useQuery<any[]>({
@@ -49,11 +94,26 @@ export default function HomePage() {
     queryFn: async () => {
       try {
         const res = await api.get('/banners');
+=======
+    enabled: !isFetching,
+  });
+
+  const { data: banners = MOCK_BANNERS } = useQuery<OfferBanner[]>({
+    queryKey: ["banners"],
+    queryFn: async () => {
+      if (!actor) return MOCK_BANNERS;
+      try {
+        const res = await actor.getActiveBanners();
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
         return res.length > 0 ? res : MOCK_BANNERS;
       } catch {
         return MOCK_BANNERS;
       }
     },
+<<<<<<< HEAD
+=======
+    enabled: !isFetching,
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   });
 
   const filteredProducts =
@@ -188,10 +248,18 @@ export default function HomePage() {
                   transition={{ delay: i * 0.1 }}
                   whileHover={{ scale: 1.03 }}
                   onClick={() => setActiveCategory(cat.name)}
+<<<<<<< HEAD
                   className={`p-4 rounded-2xl border-2 text-left transition-all ${activeCategory === cat.name
                     ? "border-primary bg-primary/10"
                     : "border-border bg-card hover:border-primary/50"
                     }`}
+=======
+                  className={`p-4 rounded-2xl border-2 text-left transition-all ${
+                    activeCategory === cat.name
+                      ? "border-primary bg-primary/10"
+                      : "border-border bg-card hover:border-primary/50"
+                  }`}
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                 >
                   <div className="text-3xl mb-2">{cat.icon}</div>
                   <div className="font-display font-semibold text-foreground">
@@ -223,15 +291,27 @@ export default function HomePage() {
 
             {/* Category Filter Tabs */}
             <div className="hidden md:flex gap-2 flex-wrap">
+<<<<<<< HEAD
               {allCategories.map((cat: any) => (
+=======
+              {allCategories.map((cat) => (
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                 <button
                   key={cat}
                   type="button"
                   onClick={() => setActiveCategory(cat)}
+<<<<<<< HEAD
                   className={`px-3 py-1.5 text-xs font-ui rounded-full transition-all ${activeCategory === cat
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-muted-foreground hover:bg-muted/80"
                     }`}
+=======
+                  className={`px-3 py-1.5 text-xs font-ui rounded-full transition-all ${
+                    activeCategory === cat
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  }`}
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                 >
                   {cat}
                 </button>
@@ -240,9 +320,15 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<<<<<<< HEAD
             {filteredProducts.map((product: any, i: number) => (
               <ProductCard
                 key={product._id || product.id}
+=======
+            {filteredProducts.map((product, i) => (
+              <ProductCard
+                key={product.id.toString()}
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                 product={product}
                 index={i}
               />

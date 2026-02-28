@@ -37,7 +37,11 @@ export default function BannerCarousel({ banners }: BannerCarouselProps) {
     <div className="relative overflow-hidden rounded-2xl shadow-jute">
       <AnimatePresence mode="wait">
         <motion.div
+<<<<<<< HEAD
           key={(banner._id || banner.id || current).toString()}
+=======
+          key={banner.id.toString()}
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
           initial={{ opacity: 0, x: 60 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -60 }}
@@ -82,6 +86,7 @@ export default function BannerCarousel({ banners }: BannerCarouselProps) {
                 <ChevronLeft className="h-4 w-4" />
               </Button>
               <div className="flex gap-1">
+<<<<<<< HEAD
                 {activeBanners.map((b, i) => (
                   <button
                     key={(b._id || b.id || i).toString()}
@@ -89,6 +94,16 @@ export default function BannerCarousel({ banners }: BannerCarouselProps) {
                     onClick={() => setCurrent(i)}
                     className={`h-1.5 rounded-full transition-all ${i === current ? "w-4 bg-white" : "w-1.5 bg-white/40"
                       }`}
+=======
+                {activeBanners.map((banner, i) => (
+                  <button
+                    key={banner.id.toString()}
+                    type="button"
+                    onClick={() => setCurrent(i)}
+                    className={`h-1.5 rounded-full transition-all ${
+                      i === current ? "w-4 bg-white" : "w-1.5 bg-white/40"
+                    }`}
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                   />
                 ))}
               </div>

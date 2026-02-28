@@ -7,8 +7,11 @@
     "npm": "please use pnpm"
   },
   "scripts": {
+<<<<<<< HEAD
     "dev": "pnpm -r --parallel dev",
     "start": "pnpm -r --parallel start",
+=======
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     "build": "pnpm -r --if-present run build",
     "typecheck": "pnpm -r --if-present run typecheck",
     "check": "pnpm -r --if-present run check",
@@ -17,4 +20,8 @@
   "devDependencies": {
     "sharp": "^0.34.4"
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1

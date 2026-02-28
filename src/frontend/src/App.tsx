@@ -20,7 +20,10 @@ import OwnerBanners from "./pages/owner/OwnerBanners";
 import OwnerDashboard from "./pages/owner/OwnerDashboard";
 import OwnerOrders from "./pages/owner/OwnerOrders";
 import OwnerProducts from "./pages/owner/OwnerProducts";
+<<<<<<< HEAD
 import OwnerSettings from "./pages/owner/OwnerSettings";
+=======
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 
 // Root route
 const rootRoute = createRootRoute({
@@ -93,12 +96,15 @@ const ownerOrdersRoute = createRoute({
   component: OwnerOrders,
 });
 
+<<<<<<< HEAD
 const ownerSettingsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/owner/settings",
   component: OwnerSettings,
 });
 
+=======
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 // Build route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -111,7 +117,10 @@ const routeTree = rootRoute.addChildren([
   ownerProductsRoute,
   ownerBannersRoute,
   ownerOrdersRoute,
+<<<<<<< HEAD
   ownerSettingsRoute,
+=======
+>>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 ]);
 
 // Create router
