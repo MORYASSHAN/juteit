@@ -1,0 +1,230 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Font Faces ─────────────────────────────────────────────── */
+@font-face {
+  font-family: "Fraunces";
+  src: url("/assets/fonts/Fraunces.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Cabinet Grotesk";
+  src: url("/assets/fonts/CabinetGrotesk.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/assets/fonts/Satoshi.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ─── Design Tokens ────────────────────────────────────────────── */
+@layer base {
+  :root {
+    --radius: 0.75rem;
+
+    /* JuteIt Earthy Palette */
+    --background: 0.97 0.012 75;
+    --foreground: 0.22 0.04 55;
+
+    --card: 0.99 0.008 80;
+    --card-foreground: 0.22 0.04 55;
+
+    --popover: 0.99 0.008 80;
+    --popover-foreground: 0.22 0.04 55;
+
+    /* Primary: deep warm brown */
+    --primary: 0.38 0.07 50;
+    --primary-foreground: 0.97 0.012 75;
+
+    /* Secondary: olive green */
+    --secondary: 0.55 0.08 135;
+    --secondary-foreground: 0.97 0.012 75;
+
+    /* Muted: warm cream */
+    --muted: 0.93 0.018 75;
+    --muted-foreground: 0.5 0.04 55;
+
+    /* Accent: warm amber/golden */
+    --accent: 0.78 0.12 80;
+    --accent-foreground: 0.22 0.04 55;
+
+    --destructive: 0.577 0.245 27.325;
+    --destructive-foreground: 0.985 0 0;
+
+    --border: 0.88 0.025 70;
+    --input: 0.92 0.02 72;
+    --ring: 0.38 0.07 50;
+
+    --chart-1: 0.55 0.12 55;
+    --chart-2: 0.55 0.08 135;
+    --chart-3: 0.68 0.12 80;
+    --chart-4: 0.45 0.1 45;
+    --chart-5: 0.75 0.1 90;
+
+    --sidebar: 0.95 0.018 72;
+    --sidebar-foreground: 0.22 0.04 55;
+    --sidebar-primary: 0.38 0.07 50;
+    --sidebar-primary-foreground: 0.97 0.012 75;
+    --sidebar-accent: 0.88 0.025 70;
+    --sidebar-accent-foreground: 0.22 0.04 55;
+    --sidebar-border: 0.88 0.025 70;
+    --sidebar-ring: 0.38 0.07 50;
+
+    /* JuteIt specific brand tokens */
+    --jute-brown: 0.42 0.08 52;
+    --jute-dark: 0.28 0.06 50;
+    --jute-light: 0.92 0.02 72;
+    --jute-olive: 0.55 0.08 135;
+    --jute-amber: 0.78 0.12 80;
+    --jute-cream: 0.97 0.012 75;
+    --jute-success: 0.55 0.15 142;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Satoshi", "Cabinet Grotesk", sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Fraunces", serif;
+  }
+}
+
+/* ─── Custom Utilities ─────────────────────────────────────────── */
+@layer utilities {
+  .font-display {
+    font-family: "Fraunces", serif;
+  }
+
+  .font-body {
+    font-family: "Satoshi", sans-serif;
+  }
+
+  .font-ui {
+    font-family: "Cabinet Grotesk", sans-serif;
+  }
+
+  .text-jute-brown {
+    color: oklch(var(--jute-brown));
+  }
+
+  .text-jute-olive {
+    color: oklch(var(--jute-olive));
+  }
+
+  .text-jute-amber {
+    color: oklch(var(--jute-amber));
+  }
+
+  .bg-jute-cream {
+    background-color: oklch(var(--jute-cream));
+  }
+
+  .bg-jute-light {
+    background-color: oklch(var(--jute-light));
+  }
+
+  .bg-jute-brown {
+    background-color: oklch(var(--jute-brown));
+  }
+
+  .bg-jute-olive {
+    background-color: oklch(var(--jute-olive));
+  }
+
+  .grain-overlay {
+    position: relative;
+  }
+
+  .grain-overlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .price-strike {
+    position: relative;
+    color: oklch(var(--muted-foreground));
+  }
+
+  .price-strike::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1.5px;
+    background-color: oklch(var(--destructive));
+    transform: translateY(-50%);
+  }
+}
+
+/* ─── Scrollbar Styling ─────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: oklch(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(var(--jute-brown));
+  border-radius: 3px;
+}
+
+/* ─── 3D Canvas ─────────────────────────────────────────────────── */
+.three-canvas canvas {
+  border-radius: 1rem;
+}
+
+/* ─── Page transitions ─────────────────────────────────────────── */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-slide-up {
+  animation: fadeSlideUp 0.5s ease forwards;
+}
+
+/* ─── Banner shimmer ───────────────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    oklch(var(--muted)) 25%,
+    oklch(var(--background)) 50%,
+    oklch(var(--muted)) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
