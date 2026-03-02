@@ -1,5 +1,5 @@
 {
-  "name": "@caffeine/template-app",
+  "name": "juteit-monorepo",
   "type": "module",
   "engines": {
     "node": ">=16.0.0",
@@ -10,9 +10,8 @@
     "dev": "pnpm -r --parallel dev",
     "start": "pnpm -r --parallel start",
     "build": "pnpm -r --if-present run build",
-    "typecheck": "pnpm -r --if-present run typecheck",
-    "check": "pnpm -r --if-present run check",
-    "fix": "pnpm -r --if-present run fix"
+    "install-all": "pnpm install",
+    "clean": "pnpm -r exec rm -rf node_modules dist"
   },
   "devDependencies": {
     "sharp": "^0.34.4"

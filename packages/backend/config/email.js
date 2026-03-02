@@ -11,6 +11,10 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+
+
+
+
 export const sendEmail = async (to, subject, text, html) => {
     const mailOptions = {
         from: `"JUTEIT" <${process.env.SMTP_USER}>`,
