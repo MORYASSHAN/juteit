@@ -4,11 +4,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { motion } from "motion/react";
 import Footer from "../components/Footer";
-<<<<<<< HEAD
 import { Navbar } from "../components/Navbar";
-=======
-import Navbar from "../components/Navbar";
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 
@@ -66,11 +62,7 @@ export default function CartPage() {
               <div className="lg:col-span-2 space-y-4">
                 {items.map((item, i) => (
                   <motion.div
-<<<<<<< HEAD
                     key={item.productId}
-=======
-                    key={item.productId.toString()}
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
@@ -170,7 +162,6 @@ export default function CartPage() {
                       <span className="text-muted-foreground">Delivery</span>
                       <span className="text-jute-success">₹{deliveryFee}</span>
                     </div>
-<<<<<<< HEAD
                     {items.map((item) => (
                       <div
                         key={item.productId}
@@ -182,8 +173,6 @@ export default function CartPage() {
                         <span>₹{item.price * item.quantity}</span>
                       </div>
                     ))}
-=======
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                     <Separator />
                     <div className="flex justify-between font-ui font-bold text-lg">
                       <span>Total</span>

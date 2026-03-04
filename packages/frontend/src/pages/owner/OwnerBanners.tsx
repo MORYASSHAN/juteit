@@ -29,11 +29,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import type { OfferBanner } from "../../backend.d";
 import { MOCK_BANNERS } from "../../data/mockData";
-<<<<<<< HEAD
 import { api } from "../../lib/api";
-=======
-import { useActor } from "../../hooks/useActor";
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 import OwnerLayout from "./OwnerLayout";
 
 interface BannerFormState {
@@ -44,11 +40,7 @@ interface BannerFormState {
   active: boolean;
 }
 
-<<<<<<< HEAD
 function toBannerForm(banner: any): BannerFormState {
-=======
-function toBannerForm(banner: OfferBanner): BannerFormState {
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   return {
     title: banner.title,
     description: banner.description,
@@ -67,7 +59,6 @@ const EMPTY_FORM: BannerFormState = {
 };
 
 export default function OwnerBanners() {
-<<<<<<< HEAD
   const queryClient = useQueryClient();
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -79,52 +70,22 @@ export default function OwnerBanners() {
     queryFn: async () => {
       try {
         return await api.get('/banners/all');
-=======
-  const { actor, isFetching } = useActor();
-  const queryClient = useQueryClient();
-
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingBanner, setEditingBanner] = useState<OfferBanner | null>(null);
-  const [form, setForm] = useState<BannerFormState>(EMPTY_FORM);
-
-  const { data: banners = MOCK_BANNERS, isLoading } = useQuery<OfferBanner[]>({
-    queryKey: ["owner-banners-list"],
-    queryFn: async () => {
-      if (!actor) return MOCK_BANNERS;
-      try {
-        const res = await actor.getActiveBanners();
-        return res.length > 0 ? res : MOCK_BANNERS;
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
       } catch {
         return MOCK_BANNERS;
       }
     },
-<<<<<<< HEAD
   });
 
   const addMutation = useMutation({
     mutationFn: async (banner: any) => {
       await api.post('/banners', banner);
-=======
-    enabled: !isFetching,
-  });
-
-  const addMutation = useMutation({
-    mutationFn: async (banner: Omit<OfferBanner, "id">) => {
-      if (!actor) throw new Error("No actor");
-      await actor.addBanner({ id: 0n, ...banner });
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["owner-banners-list"] });
       toast.success("Banner added!");
       setDialogOpen(false);
     },
-<<<<<<< HEAD
     onError: (err: any) => toast.error(err.message || "Failed to add banner"),
-=======
-    onError: () => toast.error("Failed to add banner"),
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   });
 
   const updateMutation = useMutation({
@@ -132,50 +93,28 @@ export default function OwnerBanners() {
       id,
       banner,
     }: {
-<<<<<<< HEAD
       id: string;
       banner: any;
     }) => {
       await api.put(`/banners/${id}`, banner);
-=======
-      id: bigint;
-      banner: Omit<OfferBanner, "id">;
-    }) => {
-      if (!actor) throw new Error("No actor");
-      await actor.updateBanner(id, { id, ...banner });
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["owner-banners-list"] });
       toast.success("Banner updated!");
       setDialogOpen(false);
     },
-<<<<<<< HEAD
     onError: (err: any) => toast.error(err.message || "Failed to update banner"),
   });
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       await api.delete(`/banners/${id}`);
-=======
-    onError: () => toast.error("Failed to update banner"),
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: bigint) => {
-      if (!actor) throw new Error("No actor");
-      await actor.deleteBanner(id);
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["owner-banners-list"] });
       toast.success("Banner deleted!");
     },
-<<<<<<< HEAD
     onError: (err: any) => toast.error(err.message || "Failed to delete banner"),
-=======
-    onError: () => toast.error("Failed to delete banner"),
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   });
 
   const openAdd = () => {
@@ -184,11 +123,7 @@ export default function OwnerBanners() {
     setDialogOpen(true);
   };
 
-<<<<<<< HEAD
   const openEdit = (banner: any) => {
-=======
-  const openEdit = (banner: OfferBanner) => {
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     setEditingBanner(banner);
     setForm(toBannerForm(banner));
     setDialogOpen(true);
@@ -199,26 +134,15 @@ export default function OwnerBanners() {
       toast.error("Title is required");
       return;
     }
-<<<<<<< HEAD
     const data: any = {
       title: form.title,
       description: form.description,
       discountPercent: Number(form.discountPercent || "0"),
-=======
-    const data: Omit<OfferBanner, "id"> = {
-      title: form.title,
-      description: form.description,
-      discountPercent: BigInt(form.discountPercent || "0"),
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
       imageUrl: form.imageUrl || undefined,
       active: form.active,
     };
     if (editingBanner) {
-<<<<<<< HEAD
       updateMutation.mutate({ id: editingBanner._id || editingBanner.id, banner: data });
-=======
-      updateMutation.mutate({ id: editingBanner.id, banner: data });
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     } else {
       addMutation.mutate(data);
     }
@@ -286,18 +210,10 @@ export default function OwnerBanners() {
                       )}
                       <Badge
                         variant="outline"
-<<<<<<< HEAD
                         className={`text-xs font-ui border ${banner.active
                           ? "border-white/50 text-white"
                           : "border-white/20 text-white/50"
                           }`}
-=======
-                        className={`text-xs font-ui border ${
-                          banner.active
-                            ? "border-white/50 text-white"
-                            : "border-white/20 text-white/50"
-                        }`}
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                       >
                         {banner.active ? "Active" : "Inactive"}
                       </Badge>

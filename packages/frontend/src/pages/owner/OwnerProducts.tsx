@@ -29,11 +29,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import type { Product } from "../../backend.d";
 import { MOCK_PRODUCTS } from "../../data/mockData";
-<<<<<<< HEAD
 import { api } from "../../lib/api";
-=======
-import { useActor } from "../../hooks/useActor";
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 import OwnerLayout from "./OwnerLayout";
 
 const EMPTY_PRODUCT_FORM: ProductFormState = {
@@ -44,17 +40,10 @@ const EMPTY_PRODUCT_FORM: ProductFormState = {
   discountedPrice: "0",
   sizes: "",
   colors: "",
-<<<<<<< HEAD
   stock: 0,
   deliveryEstimate: "3-5 business days",
   returnable: true,
   images: "",
-=======
-  inStock: true,
-  deliveryEstimate: "3-5 business days",
-  returnable: true,
-  imageUrls: "",
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 };
 
 interface ProductFormState {
@@ -65,7 +54,6 @@ interface ProductFormState {
   discountedPrice: string;
   sizes: string;
   colors: string;
-<<<<<<< HEAD
   stock: number;
   deliveryEstimate: string;
   returnable: boolean;
@@ -73,15 +61,6 @@ interface ProductFormState {
 }
 
 function toFormState(product: any): ProductFormState {
-=======
-  inStock: boolean;
-  deliveryEstimate: string;
-  returnable: boolean;
-  imageUrls: string;
-}
-
-function toFormState(product: Product): ProductFormState {
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   return {
     name: product.name,
     description: product.description,
@@ -90,7 +69,6 @@ function toFormState(product: Product): ProductFormState {
     discountedPrice: product.discountedPrice.toString(),
     sizes: product.sizes.join(", "),
     colors: product.colors.join(", "),
-<<<<<<< HEAD
     stock: product.stock,
     deliveryEstimate: product.deliveryEstimate,
     returnable: product.returnable,
@@ -99,27 +77,12 @@ function toFormState(product: Product): ProductFormState {
 }
 
 function fromFormState(form: ProductFormState): any {
-=======
-    inStock: product.inStock,
-    deliveryEstimate: product.deliveryEstimate,
-    returnable: product.returnable,
-    imageUrls: product.imageUrls.join(", "),
-  };
-}
-
-function fromFormState(form: ProductFormState): Omit<Product, "id"> {
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   return {
     name: form.name,
     description: form.description,
     category: form.category,
-<<<<<<< HEAD
     originalPrice: Number(form.originalPrice || "0"),
     discountedPrice: Number(form.discountedPrice || "0"),
-=======
-    originalPrice: BigInt(form.originalPrice || "0"),
-    discountedPrice: BigInt(form.discountedPrice || "0"),
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     sizes: form.sizes
       .split(",")
       .map((s) => s.trim())
@@ -128,17 +91,10 @@ function fromFormState(form: ProductFormState): Omit<Product, "id"> {
       .split(",")
       .map((c) => c.trim())
       .filter(Boolean),
-<<<<<<< HEAD
     stock: Number(form.stock),
     deliveryEstimate: form.deliveryEstimate,
     returnable: form.returnable,
     images: form.images
-=======
-    inStock: form.inStock,
-    deliveryEstimate: form.deliveryEstimate,
-    returnable: form.returnable,
-    imageUrls: form.imageUrls
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
       .split(",")
       .map((u) => u.trim())
       .filter(Boolean),
@@ -146,15 +102,10 @@ function fromFormState(form: ProductFormState): Omit<Product, "id"> {
 }
 
 export default function OwnerProducts() {
-<<<<<<< HEAD
-=======
-  const { actor, isFetching } = useActor();
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   const queryClient = useQueryClient();
 
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-<<<<<<< HEAD
   const [editingProduct, setEditingProduct] = useState<any | null>(null);
   const [form, setForm] = useState<ProductFormState>(EMPTY_PRODUCT_FORM);
 
@@ -163,48 +114,22 @@ export default function OwnerProducts() {
     queryFn: async () => {
       try {
         return await api.get('/products');
-=======
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [form, setForm] = useState<ProductFormState>(EMPTY_PRODUCT_FORM);
-
-  const { data: products = MOCK_PRODUCTS, isLoading } = useQuery<Product[]>({
-    queryKey: ["owner-products-list"],
-    queryFn: async () => {
-      if (!actor) return MOCK_PRODUCTS;
-      try {
-        const res = await actor.listProducts();
-        return res.length > 0 ? res : MOCK_PRODUCTS;
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
       } catch {
         return MOCK_PRODUCTS;
       }
     },
-<<<<<<< HEAD
   });
 
   const addMutation = useMutation({
     mutationFn: async (product: any) => {
       await api.post('/products', product);
-=======
-    enabled: !isFetching,
-  });
-
-  const addMutation = useMutation({
-    mutationFn: async (product: Omit<Product, "id">) => {
-      if (!actor) throw new Error("No actor");
-      await actor.addProduct({ id: 0n, ...product });
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["owner-products-list"] });
       toast.success("Product added successfully!");
       setDialogOpen(false);
     },
-<<<<<<< HEAD
     onError: (err: any) => toast.error(err.message || "Failed to add product"),
-=======
-    onError: () => toast.error("Failed to add product"),
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   });
 
   const updateMutation = useMutation({
@@ -212,50 +137,28 @@ export default function OwnerProducts() {
       id,
       product,
     }: {
-<<<<<<< HEAD
       id: string;
       product: any;
     }) => {
       await api.put(`/products/${id}`, product);
-=======
-      id: bigint;
-      product: Omit<Product, "id">;
-    }) => {
-      if (!actor) throw new Error("No actor");
-      await actor.updateProduct(id, { id, ...product });
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["owner-products-list"] });
       toast.success("Product updated!");
       setDialogOpen(false);
     },
-<<<<<<< HEAD
     onError: (err: any) => toast.error(err.message || "Failed to update product"),
   });
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       await api.delete(`/products/${id}`);
-=======
-    onError: () => toast.error("Failed to update product"),
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: bigint) => {
-      if (!actor) throw new Error("No actor");
-      await actor.deleteProduct(id);
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["owner-products-list"] });
       toast.success("Product deleted!");
     },
-<<<<<<< HEAD
     onError: (err: any) => toast.error(err.message || "Failed to delete product"),
-=======
-    onError: () => toast.error("Failed to delete product"),
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   });
 
   const openAdd = () => {
@@ -349,11 +252,7 @@ export default function OwnerProducts() {
               <tbody>
                 {filtered.map((product, i) => (
                   <motion.tr
-<<<<<<< HEAD
                     key={product._id || product.id}
-=======
-                    key={product.id.toString()}
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: i * 0.03 }}
@@ -363,12 +262,8 @@ export default function OwnerProducts() {
                       <div className="flex items-center gap-3">
                         <img
                           src={
-<<<<<<< HEAD
                             (product.images && product.images[0]) ||
                             (product.imageUrls && product.imageUrls[0]) ||
-=======
-                            product.imageUrls[0] ||
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                             "https://picsum.photos/seed/jute/60/60"
                           }
                           alt={product.name}
@@ -397,21 +292,13 @@ export default function OwnerProducts() {
                     <td className="py-3 px-4 hidden md:table-cell">
                       <Badge
                         className={
-<<<<<<< HEAD
                           (product.stock > 0 || product.inStock)
-=======
-                          product.inStock
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                             ? "bg-jute-success/10 text-jute-success border-jute-success/20"
                             : "bg-destructive/10 text-destructive border-destructive/20"
                         }
                         variant="outline"
                       >
-<<<<<<< HEAD
                         {(product.stock > 0 || product.inStock) ? "In Stock" : "Out of Stock"}
-=======
-                        {product.inStock ? "In Stock" : "Out of Stock"}
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                       </Badge>
                     </td>
                     <td className="py-3 px-4">
@@ -450,11 +337,7 @@ export default function OwnerProducts() {
                               </AlertDialogCancel>
                               <AlertDialogAction
                                 onClick={() =>
-<<<<<<< HEAD
                                   deleteMutation.mutate(product._id || product.id)
-=======
-                                  deleteMutation.mutate(product.id)
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                                 }
                                 className="bg-destructive text-destructive-foreground font-ui"
                               >
@@ -599,30 +482,19 @@ export default function OwnerProducts() {
 
             <div className="sm:col-span-2">
               <Label className="font-ui text-sm font-medium mb-1.5 block">
-<<<<<<< HEAD
                 Images (comma separated)
-=======
-                Image URLs (comma separated)
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
               </Label>
               <Input
                 placeholder="https://example.com/image.jpg"
                 className="font-ui"
-<<<<<<< HEAD
                 value={form.images}
                 onChange={(e) =>
                   setForm((p) => ({ ...p, images: e.target.value }))
-=======
-                value={form.imageUrls}
-                onChange={(e) =>
-                  setForm((p) => ({ ...p, imageUrls: e.target.value }))
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                 }
               />
             </div>
 
             <div className="flex items-center gap-3">
-<<<<<<< HEAD
               <Input
                 type="number"
                 placeholder="Stock quantity"
@@ -631,13 +503,6 @@ export default function OwnerProducts() {
                 onChange={(e) => setForm((p) => ({ ...p, stock: Number(e.target.value) }))}
               />
               <Label className="font-ui text-sm font-medium">Stock Count</Label>
-=======
-              <Switch
-                checked={form.inStock}
-                onCheckedChange={(v) => setForm((p) => ({ ...p, inStock: v }))}
-              />
-              <Label className="font-ui text-sm font-medium">In Stock</Label>
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
             </div>
 
             <div className="flex items-center gap-3">

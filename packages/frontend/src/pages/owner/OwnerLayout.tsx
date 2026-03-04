@@ -7,10 +7,7 @@ import {
   Leaf,
   Megaphone,
   Package,
-<<<<<<< HEAD
   Settings,
-=======
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -23,10 +20,7 @@ const NAV_ITEMS = [
   { href: "/owner/products" as const, label: "Products", icon: Package },
   { href: "/owner/banners" as const, label: "Banners", icon: Megaphone },
   { href: "/owner/orders" as const, label: "Orders", icon: ClipboardList },
-<<<<<<< HEAD
   { href: "/owner/settings" as const, label: "Settings", icon: Settings },
-=======
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 ];
 
 interface OwnerLayoutProps {
@@ -35,20 +29,16 @@ interface OwnerLayoutProps {
   description?: string;
 }
 
-<<<<<<< HEAD
 import { useAuth } from "../../context/AuthContext";
 import { useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 
-=======
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 export default function OwnerLayout({
   children,
   title,
   description,
 }: OwnerLayoutProps) {
   const routerState = useRouterState();
-<<<<<<< HEAD
   const navigate = useNavigate();
   const { isOwner, isLoggedIn } = useAuth();
   const pathname = routerState.location.pathname;
@@ -63,10 +53,6 @@ export default function OwnerLayout({
 
   if (!isLoggedIn || !isOwner) return null;
 
-=======
-  const pathname = routerState.location.pathname;
-
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   return (
     <div className="min-h-screen bg-muted/30 flex flex-col">
       {/* Top Bar */}

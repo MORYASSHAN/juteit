@@ -11,11 +11,7 @@ import {
 import { motion } from "motion/react";
 import type { OfferBanner, Product } from "../../backend.d";
 import { MOCK_BANNERS, MOCK_PRODUCTS } from "../../data/mockData";
-<<<<<<< HEAD
 import { api } from "../../lib/api";
-=======
-import { useActor } from "../../hooks/useActor";
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 import OwnerLayout from "./OwnerLayout";
 
 const STATS_GRADIENT = [
@@ -26,28 +22,15 @@ const STATS_GRADIENT = [
 ];
 
 export default function OwnerDashboard() {
-<<<<<<< HEAD
   const { data: products = MOCK_PRODUCTS, isLoading: productsLoading } = useQuery<any[]>({
     queryKey: ["owner-products"],
     queryFn: async () => {
       try {
         return await api.get('/products');
-=======
-  const { actor, isFetching } = useActor();
-
-  const { data: products = MOCK_PRODUCTS } = useQuery<Product[]>({
-    queryKey: ["owner-products"],
-    queryFn: async () => {
-      if (!actor) return MOCK_PRODUCTS;
-      try {
-        const res = await actor.listProducts();
-        return res.length > 0 ? res : MOCK_PRODUCTS;
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
       } catch {
         return MOCK_PRODUCTS;
       }
     },
-<<<<<<< HEAD
   });
 
   const { data: banners = MOCK_BANNERS, isLoading: bannersLoading } = useQuery<any[]>({
@@ -56,26 +39,10 @@ export default function OwnerDashboard() {
       try {
         // For now, banners are mocked or we can fetch headlines from products
         return MOCK_BANNERS;
-=======
-    enabled: !isFetching,
-  });
-
-  const { data: banners = MOCK_BANNERS } = useQuery<OfferBanner[]>({
-    queryKey: ["owner-banners"],
-    queryFn: async () => {
-      if (!actor) return MOCK_BANNERS;
-      try {
-        const res = await actor.getActiveBanners();
-        return res.length > 0 ? res : MOCK_BANNERS;
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
       } catch {
         return MOCK_BANNERS;
       }
     },
-<<<<<<< HEAD
-=======
-    enabled: !isFetching,
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
   });
 
   const stats = [
@@ -199,14 +166,8 @@ export default function OwnerDashboard() {
         {products.slice(0, 5).map((product, i) => (
           <div
             key={product.id.toString()}
-<<<<<<< HEAD
             className={`flex items-center gap-4 p-4 ${i < 4 ? "border-b border-border" : ""
               }`}
-=======
-            className={`flex items-center gap-4 p-4 ${
-              i < 4 ? "border-b border-border" : ""
-            }`}
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
           >
             <img
               src={
@@ -228,14 +189,8 @@ export default function OwnerDashboard() {
                 ₹{Number(product.discountedPrice)}
               </div>
               <div
-<<<<<<< HEAD
                 className={`text-xs font-ui ${product.inStock ? "text-jute-success" : "text-destructive"
                   }`}
-=======
-                className={`text-xs font-ui ${
-                  product.inStock ? "text-jute-success" : "text-destructive"
-                }`}
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
               >
                 {product.inStock ? "In Stock" : "Out of Stock"}
               </div>

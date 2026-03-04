@@ -1,12 +1,13 @@
-import express from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
-import productRoutes from './routes/productRoutes.js';
+import bannerRoutes from './routes/bannerRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
+import productRoutes from './routes/productRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
 
 // Load env vars

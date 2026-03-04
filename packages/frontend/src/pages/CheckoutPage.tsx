@@ -22,18 +22,11 @@ import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import Footer from "../components/Footer";
-<<<<<<< HEAD
 import { Navbar } from "../components/Navbar";
 import { useCart } from "../context/CartContext";
 import { INDIAN_BANKS } from "../data/mockData";
 import { api } from "../lib/api";
 import { useEffect } from "react";
-=======
-import Navbar from "../components/Navbar";
-import { useCart } from "../context/CartContext";
-import { INDIAN_BANKS } from "../data/mockData";
-import { useActor } from "../hooks/useActor";
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 
 interface DeliveryForm {
   name: string;
@@ -51,7 +44,6 @@ interface BankingForm {
   ifsc: string;
 }
 
-<<<<<<< HEAD
 interface Settings {
   taxRate: number;
   shippingCharge: number;
@@ -62,12 +54,6 @@ export default function CheckoutPage() {
   const navigate = useNavigate();
   const { items, totalAmount: cartTotal, clearCart } = useCart();
   const [settings, setSettings] = useState<Settings>({ taxRate: 0, shippingCharge: 0, freeShippingThreshold: 0 });
-=======
-export default function CheckoutPage() {
-  const navigate = useNavigate();
-  const { items, totalAmount, clearCart } = useCart();
-  const { actor } = useActor();
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 
   const [delivery, setDelivery] = useState<DeliveryForm>({
     name: "",
@@ -87,7 +73,6 @@ export default function CheckoutPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [orderId, setOrderId] = useState<string>("");
 
-<<<<<<< HEAD
   useEffect(() => {
     const fetchSettings = async () => {
       try {
@@ -103,35 +88,24 @@ export default function CheckoutPage() {
   const taxAmount = (cartTotal * settings.taxRate) / 100;
   const deliveryFee = cartTotal >= settings.freeShippingThreshold ? 0 : settings.shippingCharge;
   const total = cartTotal + taxAmount + deliveryFee;
-=======
-  const deliveryFee = items.length > 0 ? 49 : 0;
-  const total = totalAmount + deliveryFee;
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
 
   const handlePlaceOrder = async () => {
     if (
       !delivery.name ||
       !delivery.address ||
       !delivery.city ||
-<<<<<<< HEAD
       !delivery.pincode ||
       !delivery.phone
-=======
-      !delivery.pincode
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     ) {
       toast.error("Please fill in all delivery details");
       return;
     }
-<<<<<<< HEAD
 
     if (!/^[1-9][0-9]{5}$/.test(delivery.pincode)) {
       toast.error("Please enter a valid 6-digit Indian PIN code");
       return;
     }
 
-=======
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     if (!banking.bankName || !banking.accountHolder || !banking.accountNumber) {
       toast.error("Please fill in payment details");
       return;
@@ -139,7 +113,6 @@ export default function CheckoutPage() {
 
     setIsPlacing(true);
     try {
-<<<<<<< HEAD
       const orderData = {
         items: items.map(item => ({
           product: item.productId,
@@ -166,22 +139,6 @@ export default function CheckoutPage() {
       setIsSuccess(true);
     } catch (error: any) {
       toast.error(error.message || "Failed to place order. Please try again.");
-=======
-      let newOrderId = `ORD${Date.now()}`;
-      if (actor) {
-        try {
-          const oid = await actor.placeOrder();
-          newOrderId = oid.toString();
-        } catch {
-          // Use mock order id
-        }
-      }
-      setOrderId(newOrderId);
-      clearCart();
-      setIsSuccess(true);
-    } catch {
-      toast.error("Failed to place order. Please try again.");
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
     } finally {
       setIsPlacing(false);
     }
@@ -499,7 +456,6 @@ export default function CheckoutPage() {
                           <span className="text-muted-foreground">
                             Subtotal
                           </span>
-<<<<<<< HEAD
                           <span>₹{cartTotal}</span>
                         </div>
                         <div className="flex justify-between font-ui text-sm">
@@ -507,28 +463,17 @@ export default function CheckoutPage() {
                             GST ({settings.taxRate}%)
                           </span>
                           <span>₹{taxAmount.toFixed(2)}</span>
-=======
-                          <span>₹{totalAmount}</span>
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                         </div>
                         <div className="flex justify-between font-ui text-sm">
                           <span className="text-muted-foreground">
                             Delivery
                           </span>
-<<<<<<< HEAD
                           <span>{deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}</span>
-=======
-                          <span>₹{deliveryFee}</span>
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                         </div>
                         <Separator />
                         <div className="flex justify-between font-ui font-bold text-lg">
                           <span>Total</span>
-<<<<<<< HEAD
                           <span className="text-jute-olive">₹{total.toFixed(2)}</span>
-=======
-                          <span className="text-jute-olive">₹{total}</span>
->>>>>>> b3703adf158970be9b21f99fa733e18d38b2f1e1
                         </div>
                       </div>
 

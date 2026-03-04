@@ -1,5 +1,5 @@
-import { fileURLToPath, URL } from "url";
 import react from "@vitejs/plugin-react";
+import { fileURLToPath, URL } from "url";
 import { defineConfig } from "vite";
 import environment from "vite-plugin-environment";
 
@@ -48,7 +48,7 @@ export default defineConfig({
     alias: [
       {
         find: "declarations",
-        replacement: fileURLToPath(new URL("../declarations", import.meta.url)),
+        replacement: fileURLToPath(new URL("./src/declarations", import.meta.url)),
       },
       {
         find: "@",
