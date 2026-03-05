@@ -45,6 +45,13 @@ export const updateProduct = async (req, res) => {
     }
 };
 
+// @desc    Get all products (Admin only - includes out of stock)
+// @route   GET /api/products/admin
+export const getProductsAdmin = async (req, res) => {
+    const products = await Product.find({});
+    res.json(products);
+};
+
 // @desc    Delete a product (Admin only)
 // @route   DELETE /api/products/:id
 export const deleteProduct = async (req, res) => {

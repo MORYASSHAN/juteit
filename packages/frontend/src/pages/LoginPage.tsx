@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Leaf, Loader2, Mail, MapPin, Phone, User } from "lucide-react";
+import { Leaf, Loader2, Mail } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -28,9 +28,17 @@ export default function LoginPage() {
   const [selectedRole, setSelectedRole] = useState<"buyer" | "owner">("buyer");
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
   const handleLogin = async () => {
     if (!loginForm.email || !loginForm.password) {
       toast.error("Please enter email and password");
+      return;
+    }
+    if (!validateEmail(loginForm.email)) {
+      toast.error("Please enter a valid email address");
       return;
     }
     setIsProcessing(true);
@@ -47,19 +55,23 @@ export default function LoginPage() {
   };
 
   const handleSignUp = async () => {
-    if (!profileForm.name || !profileForm.email || !profileForm.password) {
-      toast.error("Please fill in required fields");
+    if (!profileForm.email || !profileForm.password) {
+      toast.error("Please fill in email and password");
+      return;
+    }
+    if (!validateEmail(profileForm.email)) {
+      toast.error("Please enter a valid email address");
       return;
     }
     setIsProcessing(true);
     try {
       const data = await api.post('/auth/register', {
-        ...profileForm,
-        role: selectedRole
+        email: profileForm.email,
+        password: profileForm.password,
       });
       setAuth(data, data.token);
-      toast.success(selectedRole === "owner" ? "Account created! Welcome, Owner." : "Account created! Welcome to JuteIt.");
-      navigate({ to: selectedRole === "owner" ? "/owner" : "/" });
+      toast.success("Account created! Welcome to JuteIt.");
+      navigate({ to: "/" });
     } catch (error: any) {
       toast.error(error.message || "Sign up failed");
     } finally {
@@ -162,21 +174,13 @@ export default function LoginPage() {
                       )}
                     </Button>
 
-                    <div className="relative my-4">
-                      <div className="absolute inset-0 flex items-center">
-                        <span className="w-full border-t border-border"></span>
-                      </div>
-                      <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
-                      </div>
+                    <div className="flex justify-center text-xs uppercase my-4">
+                      <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 gap-3">
                       <Button variant="outline" onClick={() => handleOAuthLogin('Google')} className="rounded-xl h-11">
                         Google
-                      </Button>
-                      <Button variant="outline" onClick={() => handleOAuthLogin('Apple')} className="rounded-xl h-11">
-                        Apple/iOS
                       </Button>
                     </div>
                   </div>
@@ -185,67 +189,6 @@ export default function LoginPage() {
                 {/* Sign Up */}
                 <TabsContent value="signup">
                   <div className="space-y-4">
-                    {/* Role selector */}
-                    <div>
-                      <Label className="font-ui text-sm mb-2 block">
-                        I am a...
-                      </Label>
-                      <div className="grid grid-cols-2 gap-3">
-                        <button
-                          type="button"
-                          onClick={() => setSelectedRole("buyer")}
-                          className={`p-3 rounded-xl border-2 text-center transition-all ${selectedRole === "buyer"
-                            ? "border-primary bg-primary/10"
-                            : "border-border hover:border-primary/50"
-                            }`}
-                        >
-                          <div className="text-xl mb-1">🛍️</div>
-                          <div className="text-sm font-ui font-medium">
-                            Buyer
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            Shop products
-                          </div>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setSelectedRole("owner")}
-                          className={`p-3 rounded-xl border-2 text-center transition-all ${selectedRole === "owner"
-                            ? "border-primary bg-primary/10"
-                            : "border-border hover:border-primary/50"
-                            }`}
-                        >
-                          <div className="text-xl mb-1">🏪</div>
-                          <div className="text-sm font-ui font-medium">
-                            Owner
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            Manage store
-                          </div>
-                        </button>
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label className="font-ui text-sm font-medium mb-1.5 block">
-                        Full Name *
-                      </Label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          placeholder="Your full name"
-                          className="pl-9 font-ui"
-                          value={profileForm.name}
-                          onChange={(e) =>
-                            setProfileForm((p) => ({
-                              ...p,
-                              name: e.target.value,
-                            }))
-                          }
-                        />
-                      </div>
-                    </div>
-
                     <div>
                       <Label className="font-ui text-sm font-medium mb-1.5 block">
                         Email *
@@ -281,46 +224,6 @@ export default function LoginPage() {
                             setProfileForm((p) => ({
                               ...p,
                               password: e.target.value,
-                            }))
-                          }
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label className="font-ui text-sm font-medium mb-1.5 block">
-                        Phone
-                      </Label>
-                      <div className="relative">
-                        <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          placeholder="+91 XXXXXXXXXX"
-                          className="pl-9 font-ui"
-                          value={profileForm.phone}
-                          onChange={(e) =>
-                            setProfileForm((p) => ({
-                              ...p,
-                              phone: e.target.value,
-                            }))
-                          }
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label className="font-ui text-sm font-medium mb-1.5 block">
-                        Delivery Address
-                      </Label>
-                      <div className="relative">
-                        <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          placeholder="Street, City, State, PIN"
-                          className="pl-9 font-ui"
-                          value={profileForm.address}
-                          onChange={(e) =>
-                            setProfileForm((p) => ({
-                              ...p,
-                              address: e.target.value,
                             }))
                           }
                         />

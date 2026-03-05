@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Banknote, Loader2, Mail, Percent, Save, Truck } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { api } from "../../lib/api";
 import OwnerLayout from "./OwnerLayout";
@@ -23,6 +23,7 @@ export default function OwnerSettings() {
         taxRate: 0,
         shippingCharge: 0,
         freeShippingThreshold: 0,
+        instagramUrl: "",
     });
 
     const { data: settings, isLoading } = useQuery({
@@ -97,6 +98,16 @@ export default function OwnerSettings() {
                                         className="font-ui"
                                     />
                                     <p className="text-xs text-muted-foreground font-ui">This email receives new order notifications.</p>
+                                </div>
+                                <div className="space-y-1.5">
+                                    <Label className="font-ui text-sm font-medium">Instagram Link</Label>
+                                    <Input
+                                        value={form.instagramUrl}
+                                        onChange={e => setForm({ ...form, instagramUrl: e.target.value })}
+                                        placeholder="https://instagram.com/..."
+                                        className="font-ui"
+                                    />
+                                    <p className="text-xs text-muted-foreground font-ui">Your store's Instagram profile link.</p>
                                 </div>
                             </CardContent>
                         </Card>

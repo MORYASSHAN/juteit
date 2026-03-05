@@ -1,9 +1,18 @@
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Leaf, Twitter } from "lucide-react";
+import { Facebook, Instagram, Leaf, Youtube } from "lucide-react";
+import { api } from "../lib/api";
 
 export default function Footer() {
   const year = new Date().getFullYear();
   const hostname = encodeURIComponent(window.location.hostname);
+
+  const { data: settings } = useQuery({
+    queryKey: ["owner-settings"],
+    queryFn: async () => {
+      return await api.get('/settings');
+    },
+  });
 
   return (
     <footer className="bg-foreground text-background mt-16">
@@ -24,7 +33,7 @@ export default function Footer() {
             </p>
             <div className="flex gap-3 mt-4">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/juteit_222?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-background/50 hover:text-background transition-colors"
@@ -40,12 +49,12 @@ export default function Footer() {
                 <Facebook className="h-5 w-5" />
               </a>
               <a
-                href="https://twitter.com"
+                href="https://youtube.com/@jyotis_222?si=GnnmL4h8ykRQKzO5"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-background/50 hover:text-background transition-colors"
               >
-                <Twitter className="h-5 w-5" />
+                <Youtube className="h-5 w-5" />
               </a>
             </div>
           </div>

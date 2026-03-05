@@ -9,7 +9,6 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { motion } from "motion/react";
-import type { OfferBanner, Product } from "../../backend.d";
 import { MOCK_BANNERS, MOCK_PRODUCTS } from "../../data/mockData";
 import { api } from "../../lib/api";
 import OwnerLayout from "./OwnerLayout";
@@ -26,7 +25,7 @@ export default function OwnerDashboard() {
     queryKey: ["owner-products"],
     queryFn: async () => {
       try {
-        return await api.get('/products');
+        return await api.get('/products/admin');
       } catch {
         return MOCK_PRODUCTS;
       }

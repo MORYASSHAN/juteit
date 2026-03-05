@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-    name: { type: String, required: true },
+    name: { type: String },
     email: { type: String, required: true, unique: true },
     password: { type: String }, // Optional for OAuth users
     role: { type: String, enum: ['owner', 'buyer'], default: 'buyer' },

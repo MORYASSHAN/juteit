@@ -1,8 +1,11 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useQuery } from "@tanstack/react-query";
+import { Textarea } from "@/components/ui/textarea";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import {
   ArrowLeft,
@@ -24,7 +27,78 @@ import { useCart } from "../context/CartContext";
 import { MOCK_PRODUCTS } from "../data/mockData";
 import { api } from "../lib/api";
 
+function InquiryForm({ productId, productName }: { productId: string; productName: string }) {
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+
+  const mutation = useMutation({
+    mutationFn: (data: any) => api.post("/inquiries", data),
+    onSuccess: () => {
+      toast.success("Your inquiry was sent! We'll get back to you soon.");
+      setForm({ name: "", email: "", message: "" });
+    },
+    onError: (err: any) => toast.error(err.message || "Failed to send inquiry"),
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name || !form.email || !form.message) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    mutation.mutate({ ...form, product: productId, productName });
+  };
+
+  return (
+    <div>
+      <h3 className="font-display font-semibold text-foreground mb-1">Have a Question?</h3>
+      <p className="text-muted-foreground text-sm mb-4">
+        Ask us anything about this product and we'll get back to you.
+      </p>
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <div className="grid sm:grid-cols-2 gap-3">
+          <div>
+            <Label className="font-ui text-sm font-medium mb-1.5 block">Your Name</Label>
+            <Input
+              placeholder="John Doe"
+              className="font-ui"
+              value={form.name}
+              onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
+            />
+          </div>
+          <div>
+            <Label className="font-ui text-sm font-medium mb-1.5 block">Email</Label>
+            <Input
+              type="email"
+              placeholder="you@example.com"
+              className="font-ui"
+              value={form.email}
+              onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
+            />
+          </div>
+        </div>
+        <div>
+          <Label className="font-ui text-sm font-medium mb-1.5 block">Message</Label>
+          <Textarea
+            placeholder="What would you like to know about this product?"
+            className="font-ui min-h-24"
+            value={form.message}
+            onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
+          />
+        </div>
+        <Button
+          type="submit"
+          disabled={mutation.isPending}
+          className="bg-primary text-primary-foreground font-ui"
+        >
+          {mutation.isPending ? "Sending..." : "Send Inquiry"}
+        </Button>
+      </form>
+    </div>
+  );
+}
+
 export default function ProductDetailPage() {
+
   const { id } = useParams({ from: "/product/$id" });
   const navigate = useNavigate();
   const { addItem } = useCart();
@@ -406,6 +480,13 @@ export default function ProductDetailPage() {
                   {product.description}
                 </p>
               </div>
+
+              {/* Inquiry Form */}
+              <Separator />
+              <InquiryForm
+                productId={product._id || product.id || id}
+                productName={product.name}
+              />
             </motion.div>
           </div>
         </div>

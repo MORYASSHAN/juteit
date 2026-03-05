@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Leaf,
   Megaphone,
+  MessageSquare,
   Package,
   Settings,
 } from "lucide-react";
@@ -20,6 +21,7 @@ const NAV_ITEMS = [
   { href: "/owner/products" as const, label: "Products", icon: Package },
   { href: "/owner/banners" as const, label: "Banners", icon: Megaphone },
   { href: "/owner/orders" as const, label: "Orders", icon: ClipboardList },
+  { href: "/owner/inquiries" as const, label: "Inquiries", icon: MessageSquare },
   { href: "/owner/settings" as const, label: "Settings", icon: Settings },
 ];
 
@@ -29,9 +31,9 @@ interface OwnerLayoutProps {
   description?: string;
 }
 
-import { useAuth } from "../../context/AuthContext";
-import { useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 export default function OwnerLayout({
   children,

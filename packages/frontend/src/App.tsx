@@ -18,6 +18,7 @@ import OrdersPage from "./pages/OrdersPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import OwnerBanners from "./pages/owner/OwnerBanners";
 import OwnerDashboard from "./pages/owner/OwnerDashboard";
+import OwnerInquiries from "./pages/owner/OwnerInquiries";
 import OwnerOrders from "./pages/owner/OwnerOrders";
 import OwnerProducts from "./pages/owner/OwnerProducts";
 import OwnerSettings from "./pages/owner/OwnerSettings";
@@ -99,6 +100,12 @@ const ownerSettingsRoute = createRoute({
   component: OwnerSettings,
 });
 
+const ownerInquiriesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/owner/inquiries",
+  component: OwnerInquiries,
+});
+
 // Build route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -112,6 +119,7 @@ const routeTree = rootRoute.addChildren([
   ownerBannersRoute,
   ownerOrdersRoute,
   ownerSettingsRoute,
+  ownerInquiriesRoute,
 ]);
 
 // Create router

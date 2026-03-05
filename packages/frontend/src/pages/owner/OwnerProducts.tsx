@@ -113,7 +113,7 @@ export default function OwnerProducts() {
     queryKey: ["owner-products-list"],
     queryFn: async () => {
       try {
-        return await api.get('/products');
+        return await api.get('/products/admin');
       } catch {
         return MOCK_PRODUCTS;
       }

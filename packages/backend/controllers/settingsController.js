@@ -14,7 +14,7 @@ export const getSettings = async (req, res) => {
 // @desc    Update store settings (Admin only)
 // @route   PUT /api/settings
 export const updateSettings = async (req, res) => {
-    const { bankDetails, taxRate, baseShippingCharge, freeShippingThreshold, ownerEmail } = req.body;
+    const { bankDetails, taxRate, baseShippingCharge, freeShippingThreshold, ownerEmail, instagramUrl } = req.body;
 
     let settings = await Settings.findOne();
 
@@ -24,12 +24,13 @@ export const updateSettings = async (req, res) => {
         settings.baseShippingCharge = baseShippingCharge !== undefined ? baseShippingCharge : settings.baseShippingCharge;
         settings.freeShippingThreshold = freeShippingThreshold !== undefined ? freeShippingThreshold : settings.freeShippingThreshold;
         settings.ownerEmail = ownerEmail || settings.ownerEmail;
+        settings.instagramUrl = instagramUrl || settings.instagramUrl;
 
         const updatedSettings = await settings.save();
         res.json(updatedSettings);
     } else {
         settings = await Settings.create({
-            bankDetails, taxRate, baseShippingCharge, freeShippingThreshold, ownerEmail
+            bankDetails, taxRate, baseShippingCharge, freeShippingThreshold, ownerEmail, instagramUrl
         });
         res.status(201).json(settings);
     }

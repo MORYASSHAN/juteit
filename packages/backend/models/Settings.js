@@ -11,7 +11,8 @@ const settingsSchema = new mongoose.Schema({
     },
     taxRate: { type: Number, default: 0 }, // Percentage
     baseShippingCharge: { type: Number, default: 0 },
-    freeShippingThreshold: { type: Number, default: 0 }
+    freeShippingThreshold: { type: Number, default: 0 },
+    instagramUrl: { type: String }
 }, { timestamps: true });
 
 export const Settings = mongoose.model('Settings', settingsSchema);

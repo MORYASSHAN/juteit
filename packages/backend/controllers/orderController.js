@@ -1,6 +1,5 @@
-import { Order } from '../models/Order.js';
-import { Product } from '../models/Product.js';
 import { sendEmail } from '../config/email.js';
+import { Order } from '../models/Order.js';
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -22,13 +21,32 @@ export const addOrderItems = async (req, res) => {
     });
 
     const createdOrder = await order.save();
+    const populatedOrder = await Order.findById(createdOrder._id).populate('items.product');
 
     // Send Email to Owner
+    const itemsHtml = populatedOrder.items.map(item => `
+        <li>
+            <strong>${item.product.name}</strong> - Qty: ${item.quantity} - ${item.selectedSize}/${item.selectedColor} - ₹${item.priceAtPurchase}
+        </li>
+    `).join('');
+
+    const emailHtml = `
+        <h1>New Order Received - JUTEIT #${createdOrder._id}</h1>
+        <p><strong>Customer:</strong> ${req.user.name} (${req.user.email})</p>
+        <p><strong>Total Amount:</strong> ₹${totalAmount}</p>
+        <p><strong>Shipping Address:</strong><br>
+        ${shippingAddress.street}, ${shippingAddress.city}<br>
+        ${shippingAddress.state} - ${shippingAddress.pincode}<br>
+        ${shippingAddress.country}</p>
+        <h3>Items:</h3>
+        <ul>${itemsHtml}</ul>
+    `;
+
     await sendEmail(
         process.env.OWNER_EMAIL,
         `New Order Received - JUTEIT #${createdOrder._id}`,
-        `You have a new order from ${req.user.name}. Total: ${totalAmount}. Address: ${shippingAddress.street}, ${shippingAddress.city}, ${shippingAddress.pincode}`,
-        `<h1>New Order Received</h1><p>Order ID: ${createdOrder._id}</p><p>Total: ${totalAmount}</p>`
+        `New order from ${req.user.name}. Total: ₹${totalAmount}.`,
+        emailHtml
     );
 
     res.status(201).json(createdOrder);
