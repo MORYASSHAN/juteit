@@ -18,11 +18,12 @@ import {
   Truck,
   XCircle,
 } from "lucide-react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import Footer from "../components/Footer";
 import { Navbar } from "../components/Navbar";
+import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { MOCK_PRODUCTS } from "../data/mockData";
 import { api } from "../lib/api";
@@ -102,6 +103,7 @@ export default function ProductDetailPage() {
   const { id } = useParams({ from: "/product/$id" });
   const navigate = useNavigate();
   const { addItem } = useCart();
+  const { isLoggedIn } = useAuth();
 
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
@@ -190,6 +192,12 @@ export default function ProductDetailPage() {
   };
 
   const handleBuyNow = () => {
+    if (!isLoggedIn) {
+      if (window.confirm("Please sign up or log in to buy this product. Would you like to go to the login page?")) {
+        navigate({ to: "/login" });
+      }
+      return;
+    }
     handleAddToCart();
     navigate({ to: "/cart" });
   };
@@ -222,55 +230,63 @@ export default function ProductDetailPage() {
               className="space-y-6"
             >
               {/* Main image */}
-              <div className="relative aspect-square rounded-[2.5rem] overflow-hidden bg-muted shadow-2xl border border-border group">
-                <motion.img
-                  layoutId={`product-image-${product._id || product.id || id}`}
-                  src={images[imageIndex]}
-                  alt={product.name || "Product"}
-                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                />
+              <div className="relative aspect-square rounded-[2.5rem] overflow-hidden bg-muted shadow-2xl border border-border group cursor-zoom-in">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={images[imageIndex]}
+                    src={images[imageIndex]}
+                    alt={product.name || "Product"}
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="w-full h-full object-cover"
+                  />
+                </AnimatePresence>
                 {discount > 0 && (
-                  <div className="absolute top-4 left-4">
-                    <Badge className="bg-primary text-primary-foreground font-ui font-bold text-sm px-3 py-1.5">
+                  <div className="absolute top-6 left-6 z-10">
+                    <Badge className="bg-primary text-primary-foreground font-ui font-bold text-sm px-3 py-1.5 shadow-lg">
                       {discount}% OFF
                     </Badge>
                   </div>
                 )}
                 {!product.inStock && (
-                  <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-background/60 backdrop-blur-[2px] z-20 flex items-center justify-center">
                     <Badge
-                      variant="secondary"
-                      className="text-base px-4 py-2 font-ui"
+                      variant="destructive"
+                      className="text-base px-6 py-2.5 font-ui shadow-2xl"
                     >
                       Out of Stock
                     </Badge>
                   </div>
                 )}
 
-                {/* Image navigation */}
+                {/* Navigation Overlays */}
                 {images.length > 1 && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setImageIndex(
-                          (prev) => (prev - 1 + images.length) % images.length,
-                        )
-                      }
-                      className="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-background/80 rounded-full flex items-center justify-center"
+                  <div className="absolute inset-0 z-10 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                      variant="secondary"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setImageIndex((prev) => (prev - 1 + images.length) % images.length);
+                      }}
+                      className="h-10 w-10 rounded-full shadow-lg bg-background/80 hover:bg-background"
                     >
-                      <ChevronLeft className="h-4 w-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setImageIndex((prev) => (prev + 1) % images.length)
-                      }
-                      className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-background/80 rounded-full flex items-center justify-center"
+                      <ChevronLeft className="h-6 w-6" />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setImageIndex((prev) => (prev + 1) % images.length);
+                      }}
+                      className="h-10 w-10 rounded-full shadow-lg bg-background/80 hover:bg-background"
                     >
-                      <ChevronRight className="h-4 w-4" />
-                    </button>
-                  </>
+                      <ChevronRight className="h-6 w-6" />
+                    </Button>
+                  </div>
                 )}
               </div>
 
@@ -455,16 +471,22 @@ export default function ProductDetailPage() {
                   disabled={!product.inStock}
                   variant="outline"
                   size="lg"
-                  className="flex-1 border-primary text-primary hover:bg-primary/10 font-ui gap-2"
+                  className={`flex-1 font-ui gap-2 ${product.inStock
+                    ? "border-primary text-primary hover:bg-primary/10"
+                    : "border-destructive text-destructive bg-destructive/10 disabled:opacity-90"
+                    }`}
                 >
                   <ShoppingCart className="h-5 w-5" />
-                  Add to Cart
+                  {product.inStock ? "Add to Cart" : "Out of Stock"}
                 </Button>
                 <Button
                   onClick={handleBuyNow}
                   disabled={!product.inStock}
                   size="lg"
-                  className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 font-ui"
+                  className={`flex-1 font-ui ${product.inStock
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                    : "bg-destructive text-destructive-foreground disabled:opacity-90"
+                    }`}
                 >
                   Buy Now
                 </Button>

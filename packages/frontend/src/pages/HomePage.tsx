@@ -1,8 +1,16 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Heart, Leaf, Recycle } from "lucide-react";
+import { useSearch } from "@tanstack/react-router";
+import { ArrowRight, Heart, Leaf, Recycle, SearchX } from "lucide-react";
 import { motion } from "motion/react";
 import { Suspense, useState } from "react";
 import BannerCarousel from "../components/BannerCarousel";
@@ -28,14 +36,22 @@ const FEATURES = [
 ];
 
 export default function HomePage() {
+  const searchParams = useSearch({ from: "/" }) as any;
+  const keyword = searchParams.search || "";
+
   const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [sortBy, setSortBy] = useState<string>("newest");
 
   const { data: products = MOCK_PRODUCTS, isLoading: productsLoading } = useQuery<any[]>({
-    queryKey: ["products"],
+    queryKey: ["products", activeCategory, keyword, sortBy],
     queryFn: async () => {
       try {
-        const res = await api.get('/products');
-        return res.length > 0 ? res : MOCK_PRODUCTS;
+        const res = await api.get('/products', {
+          category: activeCategory,
+          keyword,
+          sort: sortBy
+        });
+        return res;
       } catch {
         return MOCK_PRODUCTS;
       }
@@ -54,10 +70,7 @@ export default function HomePage() {
     },
   });
 
-  const filteredProducts =
-    activeCategory === "All"
-      ? products
-      : products.filter((p) => p.category === activeCategory);
+  const filteredProducts = products;
 
   const allCategories = [
     "All",
@@ -235,6 +248,21 @@ export default function HomePage() {
                 </button>
               ))}
             </div>
+
+            {/* Sort Dropdown */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-ui text-muted-foreground whitespace-nowrap">Sort by:</span>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-[140px] h-9 text-xs font-ui">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest" className="text-xs font-ui">Newest First</SelectItem>
+                  <SelectItem value="priceAsc" className="text-xs font-ui">Price: Low to High</SelectItem>
+                  <SelectItem value="priceDesc" className="text-xs font-ui">Price: High to Low</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -248,11 +276,28 @@ export default function HomePage() {
           </div>
 
           {filteredProducts.length === 0 && (
-            <div className="text-center py-16">
-              <div className="text-5xl mb-4">🧺</div>
-              <p className="font-display text-xl text-muted-foreground">
-                No products in this category yet
+            <div className="text-center py-20 bg-muted/20 rounded-3xl border-2 border-dashed border-border">
+              <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                <SearchX className="h-8 w-8 text-muted-foreground opacity-50" />
+              </div>
+              <h3 className="font-display text-xl font-bold mb-1">No products found</h3>
+              <p className="font-ui text-muted-foreground max-w-xs mx-auto text-sm">
+                {keyword
+                  ? `We couldn't find anything matching "${keyword}". Try another keyword or category.`
+                  : "We don't have any products in this category yet. Check back soon!"}
               </p>
+              {(keyword || activeCategory !== "All") && (
+                <Button
+                  variant="link"
+                  className="mt-4 text-primary font-ui"
+                  onClick={() => {
+                    setActiveCategory("All");
+                    // Reset search via navigate or similar if needed
+                  }}
+                >
+                  Clear all filters
+                </Button>
+              )}
             </div>
           )}
         </section>

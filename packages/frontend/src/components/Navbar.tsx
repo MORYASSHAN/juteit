@@ -6,16 +6,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LogOut, Menu, Package, ShoppingCart, User, X } from "lucide-react";
+import { LogOut, Menu, Moon, Package, Search, ShoppingCart, Sun, User, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import { useTheme } from "./ThemeProvider";
 
 export function Navbar() {
   const { totalCount } = useCart();
-  const { isOwner, isLoggedIn, logout, role } = useAuth();
+  const { user, isOwner, isLoggedIn, logout, role } = useAuth();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -36,9 +39,9 @@ export function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <img
-              src="/assets/generated/juteit-logo-transparent.dim_400x120.png"
+              src="/logo.png"
               alt="JuteIt"
-              className="h-9 w-auto"
+              className="h-10 w-auto"
             />
           </Link>
 
@@ -63,8 +66,35 @@ export function Navbar() {
             )}
           </div>
 
+          {/* Search Bar */}
+          <div className="hidden lg:flex items-center flex-1 max-w-sm mx-8 relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search products..."
+              className="pl-9 h-9 font-ui text-sm bg-muted/50 border-none focus-visible:ring-primary/20 transition-all font-medium"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  const val = (e.target as HTMLInputElement).value;
+                  navigate({ to: "/", search: { search: val } as any });
+                }
+              }}
+            />
+          </div>
+
           {/* Right Actions */}
           <div className="flex items-center gap-2">
+            {/* Theme Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="h-9 w-9 px-0"
+            >
+              <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="sr-only">Toggle theme</span>
+            </Button>
+
             {/* Cart */}
             <Link to="/cart">
               <Button variant="ghost" size="sm" className="relative">
@@ -84,7 +114,7 @@ export function Navbar() {
                   <Button variant="outline" size="sm" className="gap-2">
                     <User className="h-4 w-4" />
                     <span className="hidden sm:inline text-xs capitalize">
-                      {role}
+                      {user?.name || role}
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
@@ -98,22 +128,24 @@ export function Navbar() {
                         <Package className="h-4 w-4 mr-2" />
                         Dashboard
                       </DropdownMenuItem>
+                    </>
+                  ) : (
+                    <>
                       <DropdownMenuItem
-                        onClick={() => navigate({ to: "/owner/products" })}
+                        onClick={() => navigate({ to: "/profile" })}
+                        className="cursor-pointer"
+                      >
+                        <User className="h-4 w-4 mr-2" />
+                        My Profile
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => navigate({ to: "/orders" })}
                         className="cursor-pointer"
                       >
                         <Package className="h-4 w-4 mr-2" />
-                        Products
+                        My Orders
                       </DropdownMenuItem>
                     </>
-                  ) : (
-                    <DropdownMenuItem
-                      onClick={() => navigate({ to: "/orders" })}
-                      className="cursor-pointer"
-                    >
-                      <Package className="h-4 w-4 mr-2" />
-                      My Orders
-                    </DropdownMenuItem>
                   )}
                   <DropdownMenuItem
                     onClick={handleLogout}

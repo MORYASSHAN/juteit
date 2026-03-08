@@ -78,7 +78,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             {/* Out of stock overlay */}
             {!product.inStock && (
               <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
-                <Badge variant="secondary" className="text-sm font-ui">
+                <Badge variant="destructive" className="text-sm font-ui">
                   Out of Stock
                 </Badge>
               </div>
@@ -118,7 +118,10 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               size="sm"
               onClick={handleAddToCart}
               disabled={!product.inStock}
-              className="w-full mt-2 bg-primary text-primary-foreground hover:bg-primary/90 font-ui gap-2"
+              className={`w-full mt-2 font-ui gap-2 ${product.inStock
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                  : "bg-destructive text-destructive-foreground disabled:opacity-90"
+                }`}
             >
               <ShoppingCart className="h-4 w-4" />
               {product.inStock ? "Add to Cart" : "Out of Stock"}

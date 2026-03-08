@@ -44,6 +44,8 @@ const EMPTY_PRODUCT_FORM: ProductFormState = {
   deliveryEstimate: "3-5 business days",
   returnable: true,
   images: "",
+  imageFiles: [],
+  isHeadline: false,
 };
 
 interface ProductFormState {
@@ -58,6 +60,8 @@ interface ProductFormState {
   deliveryEstimate: string;
   returnable: boolean;
   images: string;
+  imageFiles: File[];
+  isHeadline: boolean;
 }
 
 function toFormState(product: any): ProductFormState {
@@ -73,6 +77,8 @@ function toFormState(product: any): ProductFormState {
     deliveryEstimate: product.deliveryEstimate,
     returnable: product.returnable,
     images: product.images.join(", "),
+    imageFiles: [],
+    isHeadline: product.isHeadline || false,
   };
 }
 
@@ -98,6 +104,7 @@ function fromFormState(form: ProductFormState): any {
       .split(",")
       .map((u) => u.trim())
       .filter(Boolean),
+    isHeadline: form.isHeadline,
   };
 }
 
@@ -173,14 +180,49 @@ export default function OwnerProducts() {
     setDialogOpen(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.name || !form.category) {
       toast.error("Name and category are required");
       return;
     }
-    const data = fromFormState(form);
+
+    let updatedImagesString = form.images;
+
+    if (form.imageFiles && form.imageFiles.length > 0) {
+      const formData = new FormData();
+      form.imageFiles.forEach((file) => {
+        formData.append("images", file);
+      });
+
+      try {
+        const uploadRes = await fetch("http://localhost:5000/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!uploadRes.ok) {
+          throw new Error("Failed to upload images");
+        }
+
+        const uploadData = await uploadRes.json();
+        const serverUrls = uploadData.urls.map(
+          (url: string) => `http://localhost:5000${url}`
+        );
+
+        // Append to existing images
+        updatedImagesString = [updatedImagesString, ...serverUrls]
+          .filter(Boolean)
+          .join(", ");
+      } catch (err: any) {
+        toast.error(err.message || "Failed to upload images");
+        return;
+      }
+    }
+
+    const data = fromFormState({ ...form, images: updatedImagesString });
+
     if (editingProduct) {
-      updateMutation.mutate({ id: editingProduct.id, product: data });
+      updateMutation.mutate({ id: editingProduct.id || editingProduct._id, product: data });
     } else {
       addMutation.mutate(data);
     }
@@ -482,16 +524,40 @@ export default function OwnerProducts() {
 
             <div className="sm:col-span-2">
               <Label className="font-ui text-sm font-medium mb-1.5 block">
-                Images (comma separated)
+                Images (URLs, comma separated)
               </Label>
               <Input
                 placeholder="https://example.com/image.jpg"
-                className="font-ui"
+                className="font-ui mb-2"
                 value={form.images}
                 onChange={(e) =>
                   setForm((p) => ({ ...p, images: e.target.value }))
                 }
               />
+              <Label className="font-ui text-sm font-medium mb-1.5 block">
+                Upload New Images (PNG, JPG, JPEG)
+              </Label>
+              <Input
+                type="file"
+                multiple
+                accept="image/*"
+                className="font-ui"
+                onChange={(e) => {
+                  if (e.target.files) {
+                    setForm((p) => ({ ...p, imageFiles: Array.from(e.target.files as FileList) }));
+                  }
+                }}
+              />
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Switch
+                checked={form.isHeadline}
+                onCheckedChange={(v) =>
+                  setForm((p) => ({ ...p, isHeadline: v }))
+                }
+              />
+              <Label className="font-ui text-sm font-medium">Show in Banner (Headline)</Label>
             </div>
 
             <div className="flex items-center gap-3">

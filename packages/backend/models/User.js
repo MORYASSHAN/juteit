@@ -2,7 +2,12 @@ import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
     name: { type: String },
-    email: { type: String, required: true, unique: true },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Please enter a valid email address']
+    },
     password: { type: String }, // Optional for OAuth users
     role: { type: String, enum: ['owner', 'buyer'], default: 'buyer' },
     oauthId: { type: String }, // Google/iOS identifier

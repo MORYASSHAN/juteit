@@ -9,8 +9,13 @@ const getHeaders = () => {
 };
 
 export const api = {
-    get: async (endpoint: string) => {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    get: async (endpoint: string, params: any = {}) => {
+        const url = new URL(`${API_BASE_URL}${endpoint}`);
+        Object.keys(params).forEach(key => {
+            if (params[key]) url.searchParams.append(key, params[key]);
+        });
+
+        const response = await fetch(url.toString(), {
             headers: getHeaders(),
         });
         if (!response.ok) throw new Error(await response.text());

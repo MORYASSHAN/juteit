@@ -6,12 +6,14 @@ import {
   createRoute,
   createRouter,
 } from "@tanstack/react-router";
+import { ThemeProvider } from "./components/ThemeProvider";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 // Pages
+import BuyerProfile from "./pages/BuyerProfile";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import OrdersPage from "./pages/OrdersPage";
@@ -106,6 +108,12 @@ const ownerInquiriesRoute = createRoute({
   component: OwnerInquiries,
 });
 
+const profileRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/profile",
+  component: BuyerProfile,
+});
+
 // Build route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -120,6 +128,7 @@ const routeTree = rootRoute.addChildren([
   ownerOrdersRoute,
   ownerSettingsRoute,
   ownerInquiriesRoute,
+  profileRoute,
 ]);
 
 // Create router
@@ -134,10 +143,12 @@ declare module "@tanstack/react-router" {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <RouterProvider router={router} />
-      </CartProvider>
-    </AuthProvider>
+    <ThemeProvider defaultTheme="light" storageKey="juteit-ui-theme">
+      <AuthProvider>
+        <CartProvider>
+          <RouterProvider router={router} />
+        </CartProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

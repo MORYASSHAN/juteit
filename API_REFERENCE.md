@@ -9,7 +9,7 @@
 ## 🔐 Authentication — `/api/auth`
 
 ### POST `/api/auth/register`
-Register a new user. **First user registered becomes the admin (owner).**
+Register a new user. **All users default to the "buyer" role.** Owners must be explicitly set via the `/setup-owner` endpoint.
 
 **Body:**
 ```json
@@ -29,7 +29,7 @@ Register a new user. **First user registered becomes the admin (owner).**
   "token": "eyJhbGciOi..."
 }
 ```
-> ℹ️ `role` will be `"owner"` for first user, `"buyer"` for all subsequent users.
+> ℹ️ All registered users will have the `role: "buyer"`. Use the Owner Management API to assign an administrator.
 
 ---
 
@@ -56,10 +56,67 @@ Login with email and password.
 
 ---
 
+## 🔑 Owner Management — `/api/auth`
+
+> **Security Note:** These endpoints require the `x-master-key` header with the value defined in the server's `.env` (`MASTER_KEY`).
+
+### POST `/api/auth/setup-owner`
+Assign the `owner` role to a user. If the user doesn't exist, they will be created.
+
+**Headers:** `x-master-key: <MASTER_KEY>`
+
+**Body:**
+```json
+{
+  "name": "Shaan Khan",
+  "email": "admin@juteit.com",
+  "password": "password123"
+}
+```
+**Response `200`:**
+```json
+{
+  "message": "Owner setup successfully",
+  "user": {
+    "_id": "665abc...",
+    "name": "Shaan Khan",
+    "email": "admin@juteit.com",
+    "role": "owner"
+  }
+}
+```
+
+---
+
+### POST `/api/auth/delete-owner`
+Delete a user (owner or buyer). Use this to clear accidental registrations.
+
+**Headers:** `x-master-key: <MASTER_KEY>`
+
+**Body:**
+```json
+{
+  "email": "admin@juteit.com"
+}
+```
+**Response `200`:**
+```json
+{ "message": "User deleted successfully" }
+```
+
+---
+
 ## 📦 Products — `/api/products`
 
 ### GET `/api/products`
-Get all products. **Public.**
+Get all products. Supports filtering and sorting. **Public.**
+
+**Query Parameters:**
+| Parameter | Description | Options |
+| :--- | :--- | :--- |
+| `keyword` | Search in name/desc/category | _string_ |
+| `category` | Filter by category | `All`, `Bags`, `Utility`, etc. |
+| `sort` | Sort order | `newest`, `priceAsc`, `priceDesc` |
 
 **Response `200`:**
 ```json

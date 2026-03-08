@@ -103,17 +103,6 @@ export default function Footer() {
           <p className="text-background/50 text-xs">
             © {year} JuteIt. All rights reserved.
           </p>
-          <p className="text-background/40 text-xs">
-            Built with ♥ using{" "}
-            <a
-              href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${hostname}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-background/70 underline transition-colors"
-            >
-              caffeine.ai
-            </a>
-          </p>
         </div>
       </div>
     </footer>

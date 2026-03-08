@@ -33,13 +33,13 @@
     --radius: 0.75rem;
 
     /* JuteIt Earthy Palette */
-    --background: 0.97 0.012 75;
+    --background: 0.95 0.02 75;
     --foreground: 0.22 0.04 55;
 
-    --card: 0.99 0.008 80;
+    --card: 0.98 0.01 75;
     --card-foreground: 0.22 0.04 55;
 
-    --popover: 0.99 0.008 80;
+    --popover: 0.98 0.01 75;
     --popover-foreground: 0.22 0.04 55;
 
     /* Primary: deep warm brown */
@@ -90,6 +90,47 @@
     --jute-success: 0.55 0.15 142;
   }
 
+  .dark {
+    /* Deeper, more "premium" dark background */
+    --background: 0.12 0.02 50;
+    --foreground: 0.98 0.01 70;
+
+    --card: 0.16 0.03 50;
+    --card-foreground: 0.98 0.01 70;
+
+    --popover: 0.16 0.03 50;
+    --popover-foreground: 0.98 0.01 70;
+
+    /* Primary: Vibrantly bright amber for dark mode */
+    --primary: 0.82 0.15 85;
+    --primary-foreground: 0.12 0.02 50;
+
+    /* Secondary: Muted stone/amber mix */
+    --secondary: 0.25 0.05 60;
+    --secondary-foreground: 0.98 0.01 70;
+
+    /* Muted: Subtle but readable */
+    --muted: 0.22 0.04 60;
+    --muted-foreground: 0.7 0.04 70;
+
+    /* Accent: Glowing amber tint */
+    --accent: 0.3 0.1 80;
+    --accent-foreground: 0.98 0.01 70;
+
+    --border: 0.2 0.03 50;
+    --input: 0.2 0.03 50;
+    --ring: 0.82 0.15 85;
+
+    --sidebar: 0.14 0.02 50;
+    --sidebar-foreground: 0.98 0.01 70;
+    --sidebar-primary: 0.82 0.15 85;
+    --sidebar-primary-foreground: 0.12 0.02 50;
+    --sidebar-accent: 0.22 0.04 60;
+    --sidebar-accent-foreground: 0.98 0.01 70;
+    --sidebar-border: 0.22 0.04 60;
+    --sidebar-ring: 0.82 0.15 85;
+  }
+
   * {
     @apply border-border;
   }
@@ -99,7 +140,12 @@
     font-family: "Satoshi", "Cabinet Grotesk", sans-serif;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: "Fraunces", serif;
   }
 }
@@ -202,6 +248,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -214,17 +261,40 @@
 
 /* ─── Banner shimmer ───────────────────────────────────────────── */
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .skeleton-shimmer {
-  background: linear-gradient(
-    90deg,
-    oklch(var(--muted)) 25%,
-    oklch(var(--background)) 50%,
-    oklch(var(--muted)) 75%
-  );
+  background: linear-gradient(90deg,
+      oklch(var(--muted)) 25%,
+      oklch(var(--background)) 50%,
+      oklch(var(--muted)) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
+}
+/* Hide native browser password reveal button (Edge/IE) */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none !important;
+}
+
+/* Fix Autofill background and text colors */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: #1c1917 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #fffbed inset !important;
+  transition: background-color 5000s ease-in-out 0s !important;
 }

@@ -3,7 +3,33 @@ import { Product } from '../models/Product.js';
 // @desc    Get all products
 // @route   GET /api/products
 export const getProducts = async (req, res) => {
-    const products = await Product.find({ inStock: true });
+    const { keyword, category, sort } = req.query;
+
+    let query = { inStock: true };
+
+    if (keyword) {
+        query.$or = [
+            { name: { $regex: keyword, $options: 'i' } },
+            { description: { $regex: keyword, $options: 'i' } },
+            { category: { $regex: keyword, $options: 'i' } },
+        ];
+    }
+
+    if (category && category !== 'All') {
+        query.category = category;
+    }
+
+    let apiQuery = Product.find(query);
+
+    if (sort === 'priceAsc') {
+        apiQuery = apiQuery.sort('discountedPrice');
+    } else if (sort === 'priceDesc') {
+        apiQuery = apiQuery.sort('-discountedPrice');
+    } else {
+        apiQuery = apiQuery.sort('-createdAt'); // Default to newest
+    }
+
+    const products = await apiQuery;
     res.json(products);
 };
 
