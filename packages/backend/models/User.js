@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema({
         country: { type: String, default: 'India' }
     },
     createdAt: { type: Date, default: Date.now }
-}, { timestamps: true });
+}, {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
 
 export const User = mongoose.model('User', userSchema);

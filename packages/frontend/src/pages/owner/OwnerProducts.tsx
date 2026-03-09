@@ -23,7 +23,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Edit2, Loader2, Package, Plus, Search, Trash2 } from "lucide-react";
+import { Edit2, Loader2, Package, Plus, Search, Trash2, X } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -45,6 +45,7 @@ const EMPTY_PRODUCT_FORM: ProductFormState = {
   returnable: true,
   images: "",
   imageFiles: [],
+  imageUrls: [""],
   isHeadline: false,
 };
 
@@ -61,6 +62,7 @@ interface ProductFormState {
   returnable: boolean;
   images: string;
   imageFiles: File[];
+  imageUrls: string[];
   isHeadline: boolean;
 }
 
@@ -78,6 +80,7 @@ function toFormState(product: any): ProductFormState {
     returnable: product.returnable,
     images: product.images.join(", "),
     imageFiles: [],
+    imageUrls: product.images && product.images.length > 0 ? product.images : [""],
     isHeadline: product.isHeadline || false,
   };
 }
@@ -100,8 +103,7 @@ function fromFormState(form: ProductFormState): any {
     stock: Number(form.stock),
     deliveryEstimate: form.deliveryEstimate,
     returnable: form.returnable,
-    images: form.images
-      .split(",")
+    images: form.imageUrls
       .map((u) => u.trim())
       .filter(Boolean),
     isHeadline: form.isHeadline,
@@ -186,7 +188,7 @@ export default function OwnerProducts() {
       return;
     }
 
-    let updatedImagesString = form.images;
+    let serverUrls: string[] = [];
 
     if (form.imageFiles && form.imageFiles.length > 0) {
       const formData = new FormData();
@@ -205,21 +207,19 @@ export default function OwnerProducts() {
         }
 
         const uploadData = await uploadRes.json();
-        const serverUrls = uploadData.urls.map(
+        serverUrls = uploadData.urls.map(
           (url: string) => `http://localhost:5000${url}`
         );
-
-        // Append to existing images
-        updatedImagesString = [updatedImagesString, ...serverUrls]
-          .filter(Boolean)
-          .join(", ");
       } catch (err: any) {
         toast.error(err.message || "Failed to upload images");
         return;
       }
     }
 
-    const data = fromFormState({ ...form, images: updatedImagesString });
+    const data = fromFormState({
+      ...form,
+      imageUrls: [...form.imageUrls, ...serverUrls].filter(Boolean)
+    });
 
     if (editingProduct) {
       updateMutation.mutate({ id: editingProduct.id || editingProduct._id, product: data });
@@ -522,32 +522,68 @@ export default function OwnerProducts() {
               />
             </div>
 
-            <div className="sm:col-span-2">
-              <Label className="font-ui text-sm font-medium mb-1.5 block">
-                Images (URLs, comma separated)
-              </Label>
-              <Input
-                placeholder="https://example.com/image.jpg"
-                className="font-ui mb-2"
-                value={form.images}
-                onChange={(e) =>
-                  setForm((p) => ({ ...p, images: e.target.value }))
-                }
-              />
-              <Label className="font-ui text-sm font-medium mb-1.5 block">
-                Upload New Images (PNG, JPG, JPEG)
-              </Label>
-              <Input
-                type="file"
-                multiple
-                accept="image/*"
-                className="font-ui"
-                onChange={(e) => {
-                  if (e.target.files) {
-                    setForm((p) => ({ ...p, imageFiles: Array.from(e.target.files as FileList) }));
-                  }
-                }}
-              />
+            <div className="sm:col-span-2 space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="font-ui text-sm font-medium">Product Image URLs *</Label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setForm(p => ({ ...p, imageUrls: [...p.imageUrls, ""] }))}
+                    className="h-7 text-xs gap-1 py-0 px-2"
+                  >
+                    <Plus className="h-3 w-3" /> Add Image URL
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {form.imageUrls.map((url, idx) => (
+                    <div key={idx} className="flex gap-2">
+                      <Input
+                        placeholder="https://example.com/image.jpg"
+                        className="font-ui flex-1"
+                        value={url}
+                        onChange={(e) => {
+                          const newUrls = [...form.imageUrls];
+                          newUrls[idx] = e.target.value;
+                          setForm((p) => ({ ...p, imageUrls: newUrls }));
+                        }}
+                      />
+                      {form.imageUrls.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            const newUrls = form.imageUrls.filter((_, i) => i !== idx);
+                            setForm((p) => ({ ...p, imageUrls: newUrls }));
+                          }}
+                          className="h-10 w-10 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-border">
+                <Label className="font-ui text-xs font-medium text-muted-foreground mb-1.5 block">
+                  Or Upload Local Files
+                </Label>
+                <Input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  className="font-ui text-xs h-9"
+                  onChange={(e) => {
+                    if (e.target.files) {
+                      setForm((p) => ({ ...p, imageFiles: Array.from(e.target.files as FileList) }));
+                    }
+                  }}
+                />
+              </div>
             </div>
 
             <div className="flex items-center gap-3">

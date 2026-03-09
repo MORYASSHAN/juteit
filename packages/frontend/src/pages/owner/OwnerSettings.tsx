@@ -24,6 +24,7 @@ export default function OwnerSettings() {
         shippingCharge: 0,
         freeShippingThreshold: 0,
         instagramUrl: "",
+        heroImageUrl: "",
     });
 
     const { data: settings, isLoading } = useQuery({
@@ -35,7 +36,14 @@ export default function OwnerSettings() {
 
     useEffect(() => {
         if (settings) {
-            setForm(settings);
+            setForm(prev => ({
+                ...prev,
+                ...settings,
+                bankDetails: {
+                    ...prev.bankDetails,
+                    ...(settings.bankDetails || {})
+                }
+            }));
         }
     }, [settings]);
 
@@ -92,7 +100,7 @@ export default function OwnerSettings() {
                                     <Label className="font-ui text-sm font-medium">Owner/Admin Email</Label>
                                     <Input
                                         type="email"
-                                        value={form.ownerEmail}
+                                        value={form.ownerEmail || ""}
                                         onChange={e => setForm({ ...form, ownerEmail: e.target.value })}
                                         placeholder="admin@juteit.com"
                                         className="font-ui"
@@ -102,12 +110,22 @@ export default function OwnerSettings() {
                                 <div className="space-y-1.5">
                                     <Label className="font-ui text-sm font-medium">Instagram Link</Label>
                                     <Input
-                                        value={form.instagramUrl}
+                                        value={form.instagramUrl || ""}
                                         onChange={e => setForm({ ...form, instagramUrl: e.target.value })}
                                         placeholder="https://instagram.com/..."
                                         className="font-ui"
                                     />
                                     <p className="text-xs text-muted-foreground font-ui">Your store's Instagram profile link.</p>
+                                </div>
+                                <div className="space-y-1.5">
+                                    <Label className="font-ui text-sm font-medium">Hero Collection Image URL</Label>
+                                    <Input
+                                        value={form.heroImageUrl || ""}
+                                        onChange={e => setForm({ ...form, heroImageUrl: e.target.value })}
+                                        placeholder="https://example.com/hero.jpg"
+                                        className="font-ui"
+                                    />
+                                    <p className="text-xs text-muted-foreground font-ui">Full-width image for the 'Juteit Collection' section.</p>
                                 </div>
                             </CardContent>
                         </Card>
@@ -123,7 +141,7 @@ export default function OwnerSettings() {
                                 <div className="space-y-1.5">
                                     <Label className="font-ui text-sm font-medium">Account Holder Name</Label>
                                     <Input
-                                        value={form.bankDetails.accountName}
+                                        value={form.bankDetails.accountName || ""}
                                         onChange={e => setForm({ ...form, bankDetails: { ...form.bankDetails, accountName: e.target.value } })}
                                         placeholder="Enter full name"
                                         className="font-ui"
@@ -132,7 +150,7 @@ export default function OwnerSettings() {
                                 <div className="space-y-1.5">
                                     <Label className="font-ui text-sm font-medium">Account Number</Label>
                                     <Input
-                                        value={form.bankDetails.accountNumber}
+                                        value={form.bankDetails.accountNumber || ""}
                                         onChange={e => setForm({ ...form, bankDetails: { ...form.bankDetails, accountNumber: e.target.value } })}
                                         placeholder="Enter account number"
                                         className="font-ui"
@@ -141,7 +159,7 @@ export default function OwnerSettings() {
                                 <div className="space-y-1.5">
                                     <Label className="font-ui text-sm font-medium">IFSC Code</Label>
                                     <Input
-                                        value={form.bankDetails.ifscCode}
+                                        value={form.bankDetails.ifscCode || ""}
                                         onChange={e => setForm({ ...form, bankDetails: { ...form.bankDetails, ifscCode: e.target.value } })}
                                         placeholder="SBIN0001234"
                                         className="font-ui uppercase"
@@ -150,7 +168,7 @@ export default function OwnerSettings() {
                                 <div className="space-y-1.5">
                                     <Label className="font-ui text-sm font-medium">UPI ID</Label>
                                     <Input
-                                        value={form.bankDetails.upiId}
+                                        value={form.bankDetails.upiId || ""}
                                         onChange={e => setForm({ ...form, bankDetails: { ...form.bankDetails, upiId: e.target.value } })}
                                         placeholder="juteit@okaxis"
                                         className="font-ui"

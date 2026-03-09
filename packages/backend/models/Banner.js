@@ -23,6 +23,8 @@ const bannerSchema = mongoose.Schema({
     },
 }, {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
 const Banner = mongoose.model('Banner', bannerSchema);

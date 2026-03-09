@@ -35,6 +35,10 @@ const orderSchema = new mongoose.Schema({
         default: () => new Date(Date.now() + 180 * 24 * 60 * 60 * 1000), // 180 days (6 months)
         index: { expires: 0 } // TTL index for automatic deletion
     }
-}, { timestamps: true });
+}, {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
 
 export const Order = mongoose.model('Order', orderSchema);

@@ -14,6 +14,10 @@ const productSchema = new mongoose.Schema({
     deliveryEstimate: { type: String }, // e.g., "3-5 days"
     returnable: { type: Boolean, default: true },
     isHeadline: { type: Boolean, default: false } // For offer banners
-}, { timestamps: true });
+}, {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
 
 export const Product = mongoose.model('Product', productSchema);

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { ShoppingCart, Tag } from "lucide-react";
 import { motion } from "motion/react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { Product } from "../backend.d";
 import { useCart } from "../context/CartContext";
@@ -14,6 +15,23 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, index = 0 }: ProductCardProps) {
   const { addItem } = useCart();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const images = (product.images && product.images.length > 0) ? product.images : ["/placeholder.jpg"];
+
+  useEffect(() => {
+    if (!isHovered || images.length <= 1) {
+      setCurrentImageIndex(0);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [isHovered, images.length]);
 
   const originalPrice = Number(product.originalPrice || 0);
   const discountedPrice = Number(product.discountedPrice || 0);
@@ -40,7 +58,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       selectedColor: (product.colors && product.colors[0]) || "",
       name: product.name || "Jute Product",
       price: discountedPrice,
-      imageUrl: (product.imageUrls && product.imageUrls[0]) || "",
+      imageUrl: (product.images && product.images[0]) || "",
     });
     toast.success(`${product.name || "Product"} added to cart!`);
   };
@@ -50,6 +68,8 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.07 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       whileHover={{ y: -4 }}
       className="group"
     >
@@ -58,12 +78,9 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           {/* Image */}
           <div className="relative overflow-hidden aspect-square bg-muted">
             <img
-              src={
-                product.imageUrls[0] ||
-                "https://picsum.photos/seed/jute/600/600"
-              }
-              alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              src={images[currentImageIndex]}
+              alt={product.name || "Product"}
+              className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
               loading="lazy"
             />
             {/* Discount badge */}
@@ -119,8 +136,8 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               onClick={handleAddToCart}
               disabled={!product.inStock}
               className={`w-full mt-2 font-ui gap-2 ${product.inStock
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                  : "bg-destructive text-destructive-foreground disabled:opacity-90"
+                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                : "bg-destructive text-destructive-foreground disabled:opacity-90"
                 }`}
             >
               <ShoppingCart className="h-4 w-4" />

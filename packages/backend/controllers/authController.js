@@ -138,11 +138,6 @@ export const googleAuth = async (req, res) => {
 // @route   POST /api/auth/setup-owner
 export const setupOwner = async (req, res) => {
     const { name, email, password } = req.body;
-    const masterKey = req.headers['x-master-key'];
-
-    if (!masterKey || masterKey !== process.env.MASTER_KEY) {
-        return res.status(401).json({ message: 'Unauthorized: Invalid master key' });
-    }
 
     if (!email) {
         return res.status(400).json({ message: 'Email is required' });
@@ -182,11 +177,6 @@ export const setupOwner = async (req, res) => {
 // @route   POST /api/auth/delete-owner
 export const deleteOwner = async (req, res) => {
     const { email } = req.body;
-    const masterKey = req.headers['x-master-key'];
-
-    if (!masterKey || masterKey !== process.env.MASTER_KEY) {
-        return res.status(401).json({ message: 'Unauthorized: Invalid master key' });
-    }
 
     const user = await User.findOne({ email });
 

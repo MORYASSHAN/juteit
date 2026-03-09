@@ -46,6 +46,7 @@ export interface Product {
     inStock: boolean;
     originalPrice: number;
     imageUrls: Array<string>;
+    images: Array<string>;
     name: string;
     description: string;
     sizes: Array<string>;

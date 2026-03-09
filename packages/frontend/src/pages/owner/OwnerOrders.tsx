@@ -15,7 +15,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { OrderStatus } from "../../backend.d";
 import { ORDER_STATUS_LABELS } from "../../data/mockData";
-import { MOCK_PRODUCTS } from "../../data/mockData";
 import { api } from "../../lib/api";
 import OwnerLayout from "./OwnerLayout";
 
@@ -130,7 +129,7 @@ export default function OwnerOrders() {
                       value={order.status}
                       onValueChange={(v) =>
                         updateStatusMutation.mutate({
-                          id: order.id,
+                          id: order._id || order.id,
                           status: v as OrderStatus,
                         })
                       }
@@ -155,7 +154,7 @@ export default function OwnerOrders() {
                       variant="ghost"
                       size="sm"
                       onClick={() =>
-                        setExpandedOrder(isExpanded ? null : order.id)
+                        setExpandedOrder(isExpanded ? null : (order._id || order.id))
                       }
                       className="h-8 w-8 p-0"
                     >

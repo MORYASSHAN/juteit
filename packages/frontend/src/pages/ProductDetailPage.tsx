@@ -34,7 +34,7 @@ function InquiryForm({ productId, productName }: { productId: string; productNam
   const mutation = useMutation({
     mutationFn: (data: any) => api.post("/inquiries", data),
     onSuccess: () => {
-      toast.success("Your inquiry was sent! We'll get back to you soon.");
+      toast.success("Thank you! We will soon connect you via email.");
       setForm({ name: "", email: "", message: "" });
     },
     onError: (err: any) => toast.error(err.message || "Failed to send inquiry"),
@@ -167,8 +167,8 @@ export default function ProductDetailPage() {
     ? Math.round(((originalPrice - discountedPrice) / originalPrice) * 100)
     : 0;
 
-  const images = (product.imageUrls && product.imageUrls.length > 0)
-    ? product.imageUrls
+  const images = (product.images && product.images.length > 0)
+    ? product.images
     : ["https://picsum.photos/seed/jute/600/600"];
 
   const handleAddToCart = () => {
@@ -186,7 +186,7 @@ export default function ProductDetailPage() {
       selectedColor: color,
       name: product.name || "Jute Product",
       price: discountedPrice,
-      imageUrl: images[0] || "",
+      imageUrl: (images && images[0]) || "",
     });
     toast.success(`${product.name || "Product"} added to cart!`);
   };

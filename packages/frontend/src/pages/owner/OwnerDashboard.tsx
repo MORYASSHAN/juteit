@@ -9,7 +9,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { MOCK_BANNERS, MOCK_PRODUCTS } from "../../data/mockData";
+import { MOCK_PRODUCTS } from "../../data/mockData";
 import { api } from "../../lib/api";
 import OwnerLayout from "./OwnerLayout";
 
@@ -32,14 +32,13 @@ export default function OwnerDashboard() {
     },
   });
 
-  const { data: banners = MOCK_BANNERS, isLoading: bannersLoading } = useQuery<any[]>({
-    queryKey: ["owner-banners"],
+  const { data: banners = [], isLoading: bannersLoading } = useQuery<any[]>({
+    queryKey: ["owner-banners-stats"],
     queryFn: async () => {
       try {
-        // For now, banners are mocked or we can fetch headlines from products
-        return MOCK_BANNERS;
+        return await api.get('/banners/all');
       } catch {
-        return MOCK_BANNERS;
+        return [];
       }
     },
   });
@@ -54,21 +53,21 @@ export default function OwnerDashboard() {
     },
     {
       label: "Active Banners",
-      value: banners.filter((b) => b.active).length,
+      value: banners?.filter((b: any) => b && b.active).length || 0,
       icon: Megaphone,
       href: "/owner/banners" as const,
       gradient: STATS_GRADIENT[1],
     },
     {
       label: "In Stock",
-      value: products.filter((p) => p.inStock).length,
+      value: products?.filter((p: any) => p && (p.inStock || p.stock > 0)).length || 0,
       icon: TrendingUp,
       href: "/owner/products" as const,
       gradient: STATS_GRADIENT[2],
     },
     {
       label: "Categories",
-      value: new Set(products.map((p) => p.category)).size,
+      value: new Set(products?.map((p: any) => p?.category).filter(Boolean)).size || 0,
       icon: ClipboardList,
       href: "/owner/products" as const,
       gradient: STATS_GRADIENT[3],
@@ -164,13 +163,15 @@ export default function OwnerDashboard() {
       <div className="bg-card rounded-2xl border border-border overflow-hidden">
         {products.slice(0, 5).map((product, i) => (
           <div
-            key={product.id.toString()}
-            className={`flex items-center gap-4 p-4 ${i < 4 ? "border-b border-border" : ""
+            key={(product._id || product.id || i).toString()}
+            className={`flex items-center gap-4 p-4 ${i < (products.slice(0, 5).length - 1) ? "border-b border-border" : ""
               }`}
           >
             <img
               src={
-                product.imageUrls[0] || "https://picsum.photos/seed/jute/80/80"
+                (product.images && product.images[0]) ||
+                (product.imageUrls && product.imageUrls[0]) ||
+                "https://picsum.photos/seed/jute/80/80"
               }
               alt={product.name}
               className="h-12 w-12 rounded-lg object-cover shrink-0"

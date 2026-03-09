@@ -30,12 +30,17 @@ export const getAllBanners = async (req, res) => {
 export const createBanner = async (req, res) => {
     try {
         const { title, description, discountPercent, imageUrl, active } = req.body;
+
+        if (!title || !description || !imageUrl) {
+            return res.status(400).json({ message: 'Title, description, and image URL are required' });
+        }
+
         const banner = new Banner({
             title,
             description,
-            discountPercent,
+            discountPercent: Number(discountPercent) || 0,
             imageUrl,
-            active,
+            active: active !== undefined ? active : true,
         });
         const createdBanner = await banner.save();
         res.status(201).json(createdBanner);

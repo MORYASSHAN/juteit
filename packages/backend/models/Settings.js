@@ -12,7 +12,12 @@ const settingsSchema = new mongoose.Schema({
     taxRate: { type: Number, default: 0 }, // Percentage
     baseShippingCharge: { type: Number, default: 0 },
     freeShippingThreshold: { type: Number, default: 0 },
-    instagramUrl: { type: String }
-}, { timestamps: true });
+    instagramUrl: { type: String },
+    heroImageUrl: { type: String }
+}, {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
 
 export const Settings = mongoose.model('Settings', settingsSchema);

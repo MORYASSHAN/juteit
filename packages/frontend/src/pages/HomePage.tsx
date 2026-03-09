@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
-import { useSearch } from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { ArrowRight, Heart, Leaf, Recycle, SearchX } from "lucide-react";
 import { motion } from "motion/react";
 import { Suspense, useState } from "react";
@@ -36,6 +36,7 @@ const FEATURES = [
 ];
 
 export default function HomePage() {
+  const navigate = useNavigate();
   const searchParams = useSearch({ from: "/" }) as any;
   const keyword = searchParams.search || "";
 
@@ -68,6 +69,11 @@ export default function HomePage() {
         return MOCK_BANNERS;
       }
     },
+  });
+
+  const { data: settings } = useQuery({
+    queryKey: ["public-settings"],
+    queryFn: () => api.get('/settings'),
   });
 
   const filteredProducts = products;
@@ -292,7 +298,7 @@ export default function HomePage() {
                   className="mt-4 text-primary font-ui"
                   onClick={() => {
                     setActiveCategory("All");
-                    // Reset search via navigate or similar if needed
+                    navigate({ to: "/", search: (old: any) => ({ ...old, search: undefined }) });
                   }}
                 >
                   Clear all filters
@@ -338,7 +344,7 @@ export default function HomePage() {
         {/* Hero Image Band */}
         <section id="about" className="relative h-64 overflow-hidden mt-12">
           <img
-            src="/assets/generated/hero-banner.dim_1200x500.jpg"
+            src={settings?.heroImageUrl || "/assets/generated/hero-banner.dim_1200x500.jpg"}
             alt="JuteIt Collection"
             className="w-full h-full object-cover"
           />

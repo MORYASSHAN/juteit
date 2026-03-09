@@ -11,7 +11,7 @@ interface BannerCarouselProps {
 export default function BannerCarousel({ banners }: BannerCarouselProps) {
   const [current, setCurrent] = useState(0);
 
-  const activeBanners = banners.filter((b) => b.active);
+  const activeBanners = banners.filter((b) => b && b.active);
 
   useEffect(() => {
     if (activeBanners.length <= 1) return;
@@ -55,7 +55,7 @@ export default function BannerCarousel({ banners }: BannerCarouselProps) {
                 </h3>
                 {Number(banner.discountPercent) > 0 && (
                   <span className="bg-yellow-400 text-yellow-900 text-xs font-ui font-bold px-2 py-0.5 rounded-full">
-                    {banner.discountPercent.toString()}% OFF
+                    {(banner.discountPercent || 0).toString()}% OFF
                   </span>
                 )}
               </div>

@@ -27,7 +27,6 @@ import { Edit2, Loader2, Megaphone, Plus, Trash2 } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
-import type { OfferBanner } from "../../backend.d";
 import { MOCK_BANNERS } from "../../data/mockData";
 import { api } from "../../lib/api";
 import OwnerLayout from "./OwnerLayout";
@@ -42,11 +41,11 @@ interface BannerFormState {
 
 function toBannerForm(banner: any): BannerFormState {
   return {
-    title: banner.title,
-    description: banner.description,
-    discountPercent: banner.discountPercent.toString(),
+    title: banner.title || "",
+    description: banner.description || "",
+    discountPercent: (banner.discountPercent || 0).toString(),
     imageUrl: banner.imageUrl || "",
-    active: banner.active,
+    active: !!banner.active,
   };
 }
 
@@ -187,7 +186,7 @@ export default function OwnerBanners() {
         <div className="space-y-4">
           {banners.map((banner, i) => (
             <motion.div
-              key={banner.id.toString()}
+              key={(banner._id || banner.id || i).toString()}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.06 }}
@@ -257,7 +256,7 @@ export default function OwnerBanners() {
                           Cancel
                         </AlertDialogCancel>
                         <AlertDialogAction
-                          onClick={() => deleteMutation.mutate(banner.id)}
+                          onClick={() => deleteMutation.mutate(banner._id || banner.id)}
                           className="bg-destructive text-destructive-foreground font-ui"
                         >
                           Delete

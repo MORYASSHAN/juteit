@@ -1,8 +1,17 @@
 import express from 'express';
+import fs from 'fs';
 import multer from 'multer';
 import path from 'path';
+import { admin, protect } from '../middleware/authMiddleware.js';
+
 
 const router = express.Router();
+
+// Ensure uploads directory exists
+const uploadDir = 'uploads';
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
 
 const storage = multer.diskStorage({
     destination(req, file, cb) {
@@ -35,7 +44,7 @@ const upload = multer({
     },
 });
 
-router.post('/', upload.array('images', 10), (req, res) => {
+router.post('/', protect, admin, upload.array('images', 10), (req, res) => {
     if (!req.files || req.files.length === 0) {
         return res.status(400).send({ message: 'No files uploaded' });
     }
