@@ -43,31 +43,21 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [sortBy, setSortBy] = useState<string>("newest");
 
-  const { data: products = MOCK_PRODUCTS, isLoading: productsLoading } = useQuery<any[]>({
+  const { data: products = [], isLoading: productsLoading } = useQuery<any[]>({
     queryKey: ["products", activeCategory, keyword, sortBy],
     queryFn: async () => {
-      try {
-        const res = await api.get('/products', {
-          category: activeCategory,
-          keyword,
-          sort: sortBy
-        });
-        return res;
-      } catch {
-        return MOCK_PRODUCTS;
-      }
+      return await api.get('/products', {
+        category: activeCategory,
+        keyword,
+        sort: sortBy
+      });
     },
   });
 
-  const { data: banners = MOCK_BANNERS, isLoading: bannersLoading } = useQuery<any[]>({
+  const { data: banners = [], isLoading: bannersLoading } = useQuery<any[]>({
     queryKey: ["banners"],
     queryFn: async () => {
-      try {
-        const res = await api.get('/banners');
-        return res.length > 0 ? res : MOCK_BANNERS;
-      } catch {
-        return MOCK_BANNERS;
-      }
+      return await api.get('/banners');
     },
   });
 

@@ -3,8 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Banknote, Loader2, Mail, Percent, Save, Truck } from "lucide-react";
+import { Banknote, Loader2, Mail, MessageSquare, Percent, QrCode, Save, Truck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { api } from "../../lib/api";
@@ -25,6 +26,8 @@ export default function OwnerSettings() {
         freeShippingThreshold: 0,
         instagramUrl: "",
         heroImageUrl: "",
+        qrCodeUrl: "",
+        emailThankYouMsg: "",
     });
 
     const { data: settings, isLoading } = useQuery({
@@ -58,6 +61,26 @@ export default function OwnerSettings() {
         onError: (err: any) => toast.error(err.message || "Failed to update settings"),
     });
 
+    const uploadImage = async (file: File) => {
+        const formData = new FormData();
+        formData.append("image", file);
+        try {
+            const res = await api.post("/upload/single", formData, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+            return res.url;
+        } catch (err: any) {
+            toast.error("Upload failed: " + err.message);
+            return null;
+        }
+    };
+
+    const normalizeUrl = (url: string) => {
+        if (!url) return "";
+        if (url.startsWith("http") || url.startsWith("data:") || url.startsWith("/")) return url;
+        return `${import.meta.env.VITE_API_URL || "http://localhost:5000"}${url}`;
+    };
+
     const handleSave = (e: React.FormEvent) => {
         e.preventDefault();
         updateMutation.mutate(form);
@@ -77,12 +100,15 @@ export default function OwnerSettings() {
         <OwnerLayout title="Settings" description="Configure your store's global details">
             <form onSubmit={handleSave}>
                 <Tabs defaultValue="general" className="space-y-6">
-                    <TabsList className="bg-muted/50 p-1 rounded-xl">
+                    <TabsList className="bg-muted/50 p-1 rounded-xl flex-wrap h-auto">
                         <TabsTrigger value="general" className="rounded-lg gap-2">
                             <Mail className="h-4 w-4" /> General
                         </TabsTrigger>
                         <TabsTrigger value="payment" className="rounded-lg gap-2">
-                            <Banknote className="h-4 w-4" /> Payment & Bank
+                            <Banknote className="h-4 w-4" /> Bank Details
+                        </TabsTrigger>
+                        <TabsTrigger value="communication" className="rounded-lg gap-2">
+                            <MessageSquare className="h-4 w-4" /> Email & Payment
                         </TabsTrigger>
                         <TabsTrigger value="shipping" className="rounded-lg gap-2">
                             <Truck className="h-4 w-4" /> Tax & Shipping
@@ -125,6 +151,19 @@ export default function OwnerSettings() {
                                         placeholder="https://example.com/hero.jpg"
                                         className="font-ui"
                                     />
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <Input
+                                            type="file"
+                                            className="h-8 text-xs font-ui"
+                                            onChange={async (e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) {
+                                                    const url = await uploadImage(file);
+                                                    if (url) setForm({ ...form, heroImageUrl: url });
+                                                }
+                                            }}
+                                        />
+                                    </div>
                                     <p className="text-xs text-muted-foreground font-ui">Full-width image for the 'Juteit Collection' section.</p>
                                 </div>
                             </CardContent>
@@ -178,6 +217,65 @@ export default function OwnerSettings() {
                         </Card>
                     </TabsContent>
 
+                    <TabsContent value="communication">
+                        <Card className="border-border rounded-2xl overflow-hidden shadow-sm">
+                            <CardHeader className="bg-muted/30">
+                                <CardTitle className="font-display text-lg">Email & Payment Setup</CardTitle>
+                                <CardDescription className="font-ui">Settings for customer communication and payment collection</CardDescription>
+                            </CardHeader>
+                            <CardContent className="pt-6 space-y-6">
+                                <div className="space-y-3">
+                                    <Label className="font-ui text-sm font-medium flex items-center gap-2">
+                                        <QrCode className="h-4 w-4" /> UPI QR Code Image URL
+                                    </Label>
+                                    <Input
+                                        value={form.qrCodeUrl || ""}
+                                        onChange={e => setForm({ ...form, qrCodeUrl: e.target.value })}
+                                        placeholder="https://example.com/my-qr.png"
+                                        className="font-ui"
+                                    />
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <Input
+                                            type="file"
+                                            className="h-8 text-xs font-ui"
+                                            onChange={async (e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) {
+                                                    const url = await uploadImage(file);
+                                                    if (url) setForm({ ...form, qrCodeUrl: url });
+                                                }
+                                            }}
+                                        />
+                                    </div>
+                                    <p className="text-xs text-muted-foreground font-ui">
+                                        Upload your UPI QR code or paste the direct image link here.
+                                    </p>
+                                    {form.qrCodeUrl && (
+                                        <div className="mt-2 p-2 border rounded-lg bg-muted/20 w-max">
+                                            <p className="text-[10px] uppercase font-bold text-muted-foreground mb-2">Preview:</p>
+                                            <img src={normalizeUrl(form.qrCodeUrl)} alt="QR Preview" className="h-32 w-auto object-contain border rounded shadow-sm bg-white" />
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="space-y-3 pt-2">
+                                    <Label className="font-ui text-sm font-medium flex items-center gap-2">
+                                        <Mail className="h-4 w-4" /> Email Thank You Message
+                                    </Label>
+                                    <Textarea
+                                        value={form.emailThankYouMsg || ""}
+                                        onChange={e => setForm({ ...form, emailThankYouMsg: e.target.value })}
+                                        placeholder="thank to order from juteit Your order"
+                                        className="font-ui min-h-[100px] leading-relaxed"
+                                    />
+                                    <p className="text-xs text-muted-foreground font-ui">
+                                        This message appears at the top of the order confirmation email.
+                                    </p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+
                     <TabsContent value="shipping">
                         <Card className="border-border rounded-2xl overflow-hidden shadow-sm">
                             <CardHeader className="bg-muted/30">
@@ -224,7 +322,7 @@ export default function OwnerSettings() {
                         <Button
                             type="submit"
                             disabled={updateMutation.isPending}
-                            className="bg-primary text-primary-foreground font-ui px-8 gap-2 h-11"
+                            className="bg-primary text-primary-foreground font-ui px-8 gap-2 h-11 transition-all hover:scale-105 active:scale-95"
                         >
                             {updateMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                             Save Changes
@@ -235,3 +333,4 @@ export default function OwnerSettings() {
         </OwnerLayout>
     );
 }
+

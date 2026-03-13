@@ -27,7 +27,6 @@ import { Edit2, Loader2, Megaphone, Plus, Trash2 } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { MOCK_BANNERS } from "../../data/mockData";
 import { api } from "../../lib/api";
 import OwnerLayout from "./OwnerLayout";
 
@@ -64,14 +63,10 @@ export default function OwnerBanners() {
   const [editingBanner, setEditingBanner] = useState<any | null>(null);
   const [form, setForm] = useState<BannerFormState>(EMPTY_FORM);
 
-  const { data: banners = MOCK_BANNERS, isLoading } = useQuery<any[]>({
+  const { data: banners = [], isLoading } = useQuery<any[]>({
     queryKey: ["owner-banners-list"],
     queryFn: async () => {
-      try {
-        return await api.get('/banners/all');
-      } catch {
-        return MOCK_BANNERS;
-      }
+      return await api.get('/banners/all');
     },
   });
 
@@ -126,6 +121,26 @@ export default function OwnerBanners() {
     setEditingBanner(banner);
     setForm(toBannerForm(banner));
     setDialogOpen(true);
+  };
+
+  const uploadImage = async (file: File) => {
+    const formData = new FormData();
+    formData.append("image", file);
+    try {
+      const res = await api.post("/upload/single", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+      return res.url;
+    } catch (err: any) {
+      toast.error("Upload failed: " + err.message);
+      return null;
+    }
+  };
+
+  const normalizeUrl = (url: string) => {
+    if (!url) return "";
+    if (url.startsWith("http") || url.startsWith("data:") || url.startsWith("/")) return url;
+    return `${import.meta.env.VITE_API_URL || "http://localhost:5000"}${url}`;
   };
 
   const handleSave = () => {
@@ -338,6 +353,25 @@ export default function OwnerBanners() {
                   setForm((p) => ({ ...p, imageUrl: e.target.value }))
                 }
               />
+              <div className="flex items-center gap-2 mt-2">
+                <Input
+                  type="file"
+                  className="h-8 text-xs font-ui"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const url = await uploadImage(file);
+                      if (url) setForm({ ...form, imageUrl: url });
+                    }
+                  }}
+                />
+              </div>
+              {form.imageUrl && (
+                <div className="mt-2 p-2 border rounded-lg bg-muted/20 w-max">
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground mb-2">Preview:</p>
+                  <img src={normalizeUrl(form.imageUrl)} alt="Banner Preview" className="h-20 w-auto object-contain border rounded shadow-sm" />
+                </div>
+              )}
             </div>
 
             <div className="flex items-center gap-3">

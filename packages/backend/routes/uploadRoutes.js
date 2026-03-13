@@ -1,62 +1,49 @@
 import express from 'express';
-import fs from 'fs';
 import multer from 'multer';
-import path from 'path';
+import { productStorage } from '../config/cloudinary.js';
 import { admin, protect } from '../middleware/authMiddleware.js';
-
 
 const router = express.Router();
 
-// Ensure uploads directory exists
-const uploadDir = 'uploads';
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
-}
-
-const storage = multer.diskStorage({
-    destination(req, file, cb) {
-        cb(null, 'uploads/');
-    },
-    filename(req, file, cb) {
-        cb(
-            null,
-            `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
-        );
-    },
-});
-
-function checkFileType(file, cb) {
-    const filetypes = /png|jpg|jpeg/;
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = filetypes.test(file.mimetype);
-
-    if (extname && mimetype) {
-        return cb(null, true);
-    } else {
-        cb(new Error('Images Only! Only .png, .jpg and .jpeg formats are allowed.'));
-    }
-}
-
 const upload = multer({
-    storage,
+    storage: productStorage,
     fileFilter: function (req, file, cb) {
-        checkFileType(file, cb);
+        const filetypes = /png|jpg|jpeg|webp/;
+        const mimetype = filetypes.test(file.mimetype);
+        if (mimetype) {
+            return cb(null, true);
+        } else {
+            cb(new Error('Images Only! Only .png, .jpg, .jpeg and .webp formats are allowed.'));
+        }
     },
 });
 
+// @desc    Upload multiple images to Cloudinary
+// @route   POST /api/upload
+// @access  Private/Admin
 router.post('/', protect, admin, upload.array('images', 10), (req, res) => {
     if (!req.files || req.files.length === 0) {
         return res.status(400).send({ message: 'No files uploaded' });
     }
 
-    // Construct URLs for the uploaded images
-    // Assuming the server is running on localhost:5000, we'll return relative paths
-    // which the frontend can prepend with the backend URL if needed, or we just return the path.
-    // Best approach is storing relative URLs like `/uploads/filename.png`
-    const filePaths = req.files.map((file) => `/uploads/${file.filename}`);
+    // Cloudinary storage automatically adds 'path' (the URL) to each file object
+    const fileUrls = req.files.map((file) => file.path);
+    
     res.send({
-        message: 'Images Uploaded Successfully',
-        urls: filePaths,
+        message: 'Images Uploaded Successfully to Cloudinary',
+        urls: fileUrls,
+    });
+});
+
+// @desc    Upload single image (e.g., for banners or settings)
+// @route   POST /api/upload/single
+router.post('/single', protect, admin, upload.single('image'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).send({ message: 'No file uploaded' });
+    }
+    res.send({
+        message: 'Image Uploaded Successfully to Cloudinary',
+        url: req.file.path,
     });
 });
 

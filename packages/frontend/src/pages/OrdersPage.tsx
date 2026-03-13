@@ -171,7 +171,7 @@ export default function OrdersPage() {
     queryKey: ["my-orders"],
     queryFn: async () => {
       try {
-        return await api.get('/orders/my');
+        return await api.get('/orders/myorders');
       } catch {
         return [];
       }
@@ -187,9 +187,17 @@ export default function OrdersPage() {
           <h1 className="font-display text-3xl font-bold text-foreground mb-2">
             My Orders
           </h1>
-          <p className="text-muted-foreground font-ui mb-8">
+          <p className="text-muted-foreground font-ui mb-4">
             Track and manage your JuteIt orders
           </p>
+
+          {/* Data Retention Notice */}
+          <div className="flex items-start gap-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl px-4 py-3 mb-6">
+            <span className="text-amber-500 mt-0.5 shrink-0">🕐</span>
+            <p className="text-xs text-amber-700 dark:text-amber-300 font-ui leading-relaxed">
+              <strong>Data Retention Policy:</strong> Order history is automatically deleted <strong>30 days</strong> after the order date. Save any important order details before then.
+            </p>
+          </div>
 
           {isLoading ? (
             <div className="space-y-4">

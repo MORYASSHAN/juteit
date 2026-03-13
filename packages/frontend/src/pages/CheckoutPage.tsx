@@ -106,11 +106,6 @@ export default function CheckoutPage() {
       return;
     }
 
-    if (!banking.bankName || !banking.accountHolder || !banking.accountNumber) {
-      toast.error("Please fill in payment details");
-      return;
-    }
-
     setIsPlacing(true);
     try {
       const orderData = {
@@ -177,8 +172,8 @@ export default function CheckoutPage() {
                     #{orderId}
                   </span>
                 </p>
-                <p className="text-sm text-muted-foreground mb-8">
-                  You'll receive a confirmation shortly
+                <p className="text-lg font-bold text-jute-olive mb-8">
+                  Please check your mail for payment purpose
                 </p>
                 <div className="flex gap-3 justify-center flex-wrap">
                   <Button
@@ -328,103 +323,21 @@ export default function CheckoutPage() {
                       </div>
                     </div>
 
-                    {/* Payment */}
-                    <div className="bg-card rounded-2xl border border-border p-5">
-                      <div className="flex items-center gap-2 mb-2">
+                    {/* Payment Info */}
+                    <div className="bg-card rounded-2xl border border-border p-5 text-center">
+                      <div className="flex items-center justify-center gap-2 mb-4">
                         <CreditCard className="h-5 w-5 text-primary" />
                         <h2 className="font-display font-bold text-lg">
-                          Payment Method
+                          Payment Information
                         </h2>
                       </div>
-
-                      <div className="flex items-center gap-2 mb-4 p-3 bg-primary/10 rounded-xl border border-primary/20">
-                        <Building2 className="h-4 w-4 text-primary shrink-0" />
-                        <span className="text-sm font-ui font-medium text-primary">
-                          Net Banking
-                        </span>
-                        <span className="text-xs text-muted-foreground ml-auto">
-                          Only payment method available
-                        </span>
-                      </div>
-
-                      <div className="space-y-4">
-                        <div>
-                          <Label className="font-ui text-sm font-medium mb-1.5 block">
-                            Select Bank *
-                          </Label>
-                          <Select
-                            value={banking.bankName}
-                            onValueChange={(v) =>
-                              setBanking((p) => ({ ...p, bankName: v }))
-                            }
-                          >
-                            <SelectTrigger className="font-ui">
-                              <SelectValue placeholder="Choose your bank" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {INDIAN_BANKS.map((bank) => (
-                                <SelectItem
-                                  key={bank}
-                                  value={bank}
-                                  className="font-ui"
-                                >
-                                  {bank}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <Label className="font-ui text-sm font-medium mb-1.5 block">
-                            Account Holder Name *
-                          </Label>
-                          <Input
-                            placeholder="Name as per bank records"
-                            className="font-ui"
-                            value={banking.accountHolder}
-                            onChange={(e) =>
-                              setBanking((p) => ({
-                                ...p,
-                                accountHolder: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <Label className="font-ui text-sm font-medium mb-1.5 block">
-                              Account Number *
-                            </Label>
-                            <Input
-                              placeholder="XXXXXXXXXXXX"
-                              className="font-ui"
-                              type="password"
-                              value={banking.accountNumber}
-                              onChange={(e) =>
-                                setBanking((p) => ({
-                                  ...p,
-                                  accountNumber: e.target.value,
-                                }))
-                              }
-                            />
-                          </div>
-                          <div>
-                            <Label className="font-ui text-sm font-medium mb-1.5 block">
-                              IFSC Code
-                            </Label>
-                            <Input
-                              placeholder="XXXXXXXXX"
-                              className="font-ui uppercase"
-                              value={banking.ifsc}
-                              onChange={(e) =>
-                                setBanking((p) => ({
-                                  ...p,
-                                  ifsc: e.target.value.toUpperCase(),
-                                }))
-                              }
-                            />
-                          </div>
-                        </div>
+                      <p className="text-muted-foreground mb-4">
+                        To keep your transactions secure, we send payment details directly to your email.
+                      </p>
+                      <div className="p-4 bg-jute-olive/10 rounded-xl border border-jute-olive/20">
+                        <p className="font-ui font-semibold text-jute-olive">
+                          Check your email after placing the order for payment instructions and QR code.
+                        </p>
                       </div>
                     </div>
                   </div>

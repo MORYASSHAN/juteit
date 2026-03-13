@@ -6,7 +6,7 @@ export const getProducts = async (req, res) => {
     try {
         const { keyword, category, sort } = req.query;
 
-        let query = { inStock: true };
+        let query = { inStock: { $ne: false } };
 
         if (keyword) {
             query.$or = [

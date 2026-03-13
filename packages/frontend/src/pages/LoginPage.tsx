@@ -123,11 +123,13 @@ export default function LoginPage() {
       {/* Top bar */}
       <div className="p-4">
         <Link to="/" className="flex items-center gap-2 w-fit">
-          <img
-            src="/logo.png"
-            alt="JuteIt"
-            className="h-10 w-auto"
-          />
+          <div className="rounded-xl overflow-hidden shadow-md border border-border">
+            <img
+              src="/logo.png"
+              alt="JuteIt"
+              className="h-12 w-12 object-cover"
+            />
+          </div>
         </Link>
       </div>
 
@@ -142,9 +144,13 @@ export default function LoginPage() {
           <div className="bg-card dark:bg-card/50 rounded-3xl shadow-jute-lg border border-border overflow-hidden backdrop-blur-sm">
             {/* Header */}
             <div className="bg-gradient-to-r from-amber-800 to-amber-600 px-8 py-8 text-white text-center">
-              <div className="flex justify-center mb-3">
-                <div className="h-14 w-14 bg-white/20 rounded-2xl flex items-center justify-center">
-                  <Leaf className="h-7 w-7" />
+              <div className="flex justify-center mb-4">
+                <div className="rounded-2xl overflow-hidden shadow-2xl border-2 border-white/30 ring-2 ring-white/10">
+                  <img
+                    src="/logo.png"
+                    alt="JuteIt"
+                    className="h-28 w-28 object-cover"
+                  />
                 </div>
               </div>
               <h1 className="font-display text-2xl font-bold">

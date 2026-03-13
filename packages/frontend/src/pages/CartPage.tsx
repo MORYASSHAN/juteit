@@ -32,9 +32,17 @@ export default function CartPage() {
             Continue Shopping
           </Button>
 
-          <h1 className="font-display text-3xl font-bold text-foreground mb-8">
+          <h1 className="font-display text-3xl font-bold text-foreground mb-3">
             Shopping Cart
           </h1>
+
+          {/* Data Retention Notice */}
+          <div className="flex items-start gap-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl px-4 py-3 mb-6">
+            <span className="text-amber-500 mt-0.5 shrink-0">🕐</span>
+            <p className="text-xs text-amber-700 dark:text-amber-300 font-ui leading-relaxed">
+              <strong>Notice:</strong> Your saved cart is automatically cleared after <strong>30 days</strong> of inactivity. Complete your purchase to avoid losing your selections.
+            </p>
+          </div>
 
           {items.length === 0 ? (
             <motion.div

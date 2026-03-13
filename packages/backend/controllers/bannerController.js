@@ -5,7 +5,7 @@ import Banner from '../models/Banner.js';
 // @access  Public
 export const getActiveBanners = async (req, res) => {
     try {
-        const banners = await Banner.find({ active: true });
+        const banners = await Banner.find({ active: { $ne: false } });
         res.json(banners);
     } catch (error) {
         res.status(500).json({ message: error.message });

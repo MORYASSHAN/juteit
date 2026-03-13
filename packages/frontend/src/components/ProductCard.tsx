@@ -78,7 +78,13 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           {/* Image */}
           <div className="relative overflow-hidden aspect-square bg-muted">
             <img
-              src={images[currentImageIndex]}
+              src={
+                (() => {
+                  const url = images[currentImageIndex];
+                  if (url.startsWith("http") || url.startsWith("data:") || url.startsWith("/")) return url;
+                  return `${import.meta.env.VITE_API_URL || "http://localhost:5000"}${url}`;
+                })()
+              }
               alt={product.name || "Product"}
               className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
               loading="lazy"

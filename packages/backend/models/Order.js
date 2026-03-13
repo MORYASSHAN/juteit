@@ -22,7 +22,7 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'paid', 'shipped', 'delivered', 'cancelled'],
+        enum: ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'confirmed'],
         default: 'pending'
     },
     paymentId: String,
@@ -32,7 +32,7 @@ const orderSchema = new mongoose.Schema({
     },
     expiresAt: {
         type: Date,
-        default: () => new Date(Date.now() + 180 * 24 * 60 * 60 * 1000), // 180 days (6 months)
+        default: () => new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
         index: { expires: 0 } // TTL index for automatic deletion
     }
 }, {

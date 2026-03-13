@@ -112,11 +112,7 @@ export default function ProductDetailPage() {
   const { data: product, isLoading } = useQuery<any | null>({
     queryKey: ["product", id],
     queryFn: async () => {
-      try {
-        return await api.get(`/products/${id}`);
-      } catch {
-        return MOCK_PRODUCTS.find((p) => (p._id || p.id || "").toString() === id) || null;
-      }
+      return await api.get(`/products/${id}`);
     },
   });
 
@@ -234,7 +230,13 @@ export default function ProductDetailPage() {
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={images[imageIndex]}
-                    src={images[imageIndex]}
+                    src={
+                      (() => {
+                        const url = images[imageIndex];
+                        if (url.startsWith("http") || url.startsWith("data:") || url.startsWith("/")) return url;
+                        return `${import.meta.env.VITE_API_URL || "http://localhost:5000"}${url}`;
+                      })()
+                    }
                     alt={product.name || "Product"}
                     initial={{ opacity: 0, scale: 1.1 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -304,7 +306,13 @@ export default function ProductDetailPage() {
                         }`}
                     >
                       <img
-                        src={img}
+                        src={
+                          (() => {
+                            const url = img;
+                            if (url.startsWith("http") || url.startsWith("data:") || url.startsWith("/")) return url;
+                            return `${import.meta.env.VITE_API_URL || "http://localhost:5000"}${url}`;
+                          })()
+                        }
                         alt=""
                         className="w-full h-full object-cover"
                       />

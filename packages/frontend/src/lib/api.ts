@@ -1,51 +1,67 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
-const getHeaders = () => {
+const getHeaders = (options: any = {}) => {
     const token = localStorage.getItem('token');
-    return {
-        'Content-Type': 'application/json',
+    const headers: any = {
         ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        ...options.headers,
     };
+
+    // Don't set Content-Type if it's FormData, browser will set it with boundary
+    if (!(options.body instanceof FormData) && !headers['Content-Type']) {
+        headers['Content-Type'] = 'application/json';
+    }
+
+    return headers;
 };
 
 export const api = {
-    get: async (endpoint: string, params: any = {}) => {
-        const url = new URL(`${API_BASE_URL}${endpoint}`);
+    get: async (endpoint: string, params: any = {}, options: any = {}) => {
+        const url = new URL(`${API_BASE_URL}${endpoint}`, window.location.origin);
         Object.keys(params).forEach(key => {
             if (params[key]) url.searchParams.append(key, params[key]);
         });
 
         const response = await fetch(url.toString(), {
-            headers: getHeaders(),
+            ...options,
+            headers: getHeaders(options),
         });
         if (!response.ok) throw new Error(await response.text());
         return response.json();
     },
 
-    post: async (endpoint: string, data: any) => {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    post: async (endpoint: string, data: any, options: any = {}) => {
+        const body = data instanceof FormData ? data : JSON.stringify(data);
+        const url = new URL(`${API_BASE_URL}${endpoint}`, window.location.origin);
+        const response = await fetch(url.toString(), {
             method: 'POST',
-            headers: getHeaders(),
-            body: JSON.stringify(data),
+            ...options,
+            headers: getHeaders({ ...options, body }),
+            body,
         });
         if (!response.ok) throw new Error(await response.text());
         return response.json();
     },
 
-    put: async (endpoint: string, data: any) => {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    put: async (endpoint: string, data: any, options: any = {}) => {
+        const body = data instanceof FormData ? data : JSON.stringify(data);
+        const url = new URL(`${API_BASE_URL}${endpoint}`, window.location.origin);
+        const response = await fetch(url.toString(), {
             method: 'PUT',
-            headers: getHeaders(),
-            body: JSON.stringify(data),
+            ...options,
+            headers: getHeaders({ ...options, body }),
+            body,
         });
         if (!response.ok) throw new Error(await response.text());
         return response.json();
     },
 
-    delete: async (endpoint: string) => {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    delete: async (endpoint: string, options: any = {}) => {
+        const url = new URL(`${API_BASE_URL}${endpoint}`, window.location.origin);
+        const response = await fetch(url.toString(), {
             method: 'DELETE',
-            headers: getHeaders(),
+            ...options,
+            headers: getHeaders(options),
         });
         if (!response.ok) throw new Error(await response.text());
         return response.json();

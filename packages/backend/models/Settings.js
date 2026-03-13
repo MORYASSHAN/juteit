@@ -13,7 +13,9 @@ const settingsSchema = new mongoose.Schema({
     baseShippingCharge: { type: Number, default: 0 },
     freeShippingThreshold: { type: Number, default: 0 },
     instagramUrl: { type: String },
-    heroImageUrl: { type: String }
+    heroImageUrl: { type: String },
+    qrCodeUrl: { type: String },
+    emailThankYouMsg: { type: String, default: "thank to order from juteit Your order" }
 }, {
     timestamps: true,
     toJSON: { virtuals: true },

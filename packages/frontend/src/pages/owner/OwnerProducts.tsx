@@ -118,14 +118,10 @@ export default function OwnerProducts() {
   const [editingProduct, setEditingProduct] = useState<any | null>(null);
   const [form, setForm] = useState<ProductFormState>(EMPTY_PRODUCT_FORM);
 
-  const { data: products = MOCK_PRODUCTS, isLoading } = useQuery<any[]>({
+  const { data: products = [], isLoading } = useQuery<any[]>({
     queryKey: ["owner-products-list"],
     queryFn: async () => {
-      try {
-        return await api.get('/products/admin');
-      } catch {
-        return MOCK_PRODUCTS;
-      }
+      return await api.get('/products/admin');
     },
   });
 
@@ -197,18 +193,14 @@ export default function OwnerProducts() {
       });
 
       try {
-        const uploadRes = await fetch("http://localhost:5000/api/upload", {
-          method: "POST",
-          body: formData,
+        const uploadData = await api.post("/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         });
 
-        if (!uploadRes.ok) {
-          throw new Error("Failed to upload images");
-        }
-
-        const uploadData = await uploadRes.json();
         serverUrls = uploadData.urls.map(
-          (url: string) => `http://localhost:5000${url}`
+          (url: string) => url.startsWith("http") ? url : `${import.meta.env.VITE_API_URL || "http://localhost:5000"}${url}`
         );
       } catch (err: any) {
         toast.error(err.message || "Failed to upload images");
@@ -304,9 +296,13 @@ export default function OwnerProducts() {
                       <div className="flex items-center gap-3">
                         <img
                           src={
-                            (product.images && product.images[0]) ||
-                            (product.imageUrls && product.imageUrls[0]) ||
-                            "https://picsum.photos/seed/jute/60/60"
+                            (() => {
+                              const url = (product.images && product.images[0]) ||
+                                         (product.imageUrls && product.imageUrls[0]) ||
+                                         "https://picsum.photos/seed/jute/60/60";
+                              if (url.startsWith("http") || url.startsWith("data:") || url.startsWith("/")) return url;
+                              return `${import.meta.env.VITE_API_URL || "http://localhost:5000"}${url}`;
+                            })()
                           }
                           alt={product.name}
                           className="h-10 w-10 rounded-lg object-cover shrink-0"

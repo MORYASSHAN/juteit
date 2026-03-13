@@ -38,11 +38,13 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img
-              src="/logo.png"
-              alt="JuteIt"
-              className="h-10 w-auto"
-            />
+            <div className="rounded-xl overflow-hidden shadow-md border border-border ring-1 ring-primary/10">
+              <img
+                src="/logo.png"
+                alt="JuteIt"
+                className="h-12 w-12 object-cover"
+              />
+            </div>
           </Link>
 
           {/* Desktop Nav Links */}
@@ -51,7 +53,7 @@ export function Navbar() {
               <Link
                 key={link.href}
                 to={link.href}
-                className="text-sm font-ui font-medium text-foreground/70 hover:text-foreground transition-colors"
+                className="text-sm font-ui font-medium text-primary/80 hover:text-primary transition-colors"
               >
                 {link.label}
               </Link>
@@ -68,7 +70,7 @@ export function Navbar() {
 
           {/* Search Bar */}
           <div className="hidden lg:flex items-center flex-1 max-w-sm mx-8 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/70" />
             <Input
               placeholder="Search products..."
               className="pl-9 h-9 font-ui text-sm bg-muted/50 border-none focus-visible:ring-primary/20 transition-all font-medium"
@@ -111,9 +113,9 @@ export function Navbar() {
             {isLoggedIn ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2">
+                  <Button variant="outline" size="sm" className="gap-2 border-primary/30 text-primary">
                     <User className="h-4 w-4" />
-                    <span className="hidden sm:inline text-xs capitalize">
+                    <span className="hidden sm:inline text-xs capitalize font-medium">
                       {user?.name || role}
                     </span>
                   </Button>
@@ -197,7 +199,7 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   to={link.href}
-                  className="py-2 text-sm font-ui font-medium text-foreground/70 hover:text-foreground transition-colors"
+                  className="py-2 text-sm font-ui font-medium text-primary/80 hover:text-primary transition-colors"
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}

@@ -19,7 +19,7 @@ export const getSettings = async (req, res) => {
 // @route   PUT /api/settings
 export const updateSettings = async (req, res) => {
     try {
-        const { bankDetails, taxRate, baseShippingCharge, freeShippingThreshold, ownerEmail, instagramUrl, heroImageUrl } = req.body;
+        const { bankDetails, taxRate, baseShippingCharge, freeShippingThreshold, ownerEmail, instagramUrl, heroImageUrl, qrCodeUrl, emailThankYouMsg } = req.body;
 
         let settings = await Settings.findOne();
 
@@ -31,12 +31,14 @@ export const updateSettings = async (req, res) => {
             settings.ownerEmail = ownerEmail || settings.ownerEmail;
             settings.instagramUrl = instagramUrl || settings.instagramUrl;
             settings.heroImageUrl = heroImageUrl || settings.heroImageUrl;
+            settings.qrCodeUrl = qrCodeUrl || settings.qrCodeUrl;
+            settings.emailThankYouMsg = emailThankYouMsg || settings.emailThankYouMsg;
 
             const updatedSettings = await settings.save();
             res.json(updatedSettings);
         } else {
             settings = await Settings.create({
-                bankDetails, taxRate, baseShippingCharge, freeShippingThreshold, ownerEmail, instagramUrl
+                bankDetails, taxRate, baseShippingCharge, freeShippingThreshold, ownerEmail, instagramUrl, heroImageUrl, qrCodeUrl, emailThankYouMsg
             });
             res.status(201).json(settings);
         }

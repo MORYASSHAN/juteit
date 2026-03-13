@@ -9,7 +9,6 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { MOCK_PRODUCTS } from "../../data/mockData";
 import { api } from "../../lib/api";
 import OwnerLayout from "./OwnerLayout";
 
@@ -21,14 +20,10 @@ const STATS_GRADIENT = [
 ];
 
 export default function OwnerDashboard() {
-  const { data: products = MOCK_PRODUCTS, isLoading: productsLoading } = useQuery<any[]>({
+  const { data: products = [], isLoading: productsLoading } = useQuery<any[]>({
     queryKey: ["owner-products"],
     queryFn: async () => {
-      try {
-        return await api.get('/products/admin');
-      } catch {
-        return MOCK_PRODUCTS;
-      }
+      return await api.get('/products/admin');
     },
   });
 

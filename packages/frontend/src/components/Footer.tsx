@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Leaf, Youtube } from "lucide-react";
+import { Facebook, Github, Instagram, Leaf, Linkedin, Youtube } from "lucide-react";
 import { api } from "../lib/api";
 
 export default function Footer() {
@@ -99,10 +99,39 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-10 pt-6 border-t border-background/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-background/50 text-xs">
+        <div className="mt-10 pt-6 border-t border-background/10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="text-background/50 text-xs text-center md:text-left">
             © {year} JuteIt. All rights reserved.
           </p>
+          
+          {/* Developer Credit */}
+          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 text-xs text-background/60">
+            <span className="whitespace-nowrap">
+              Developed by <span className="font-semibold text-background/90">Shaan Goswami</span>
+            </span>
+            <div className="flex items-center gap-4">
+              <a
+                href="https://github.com/MORYASSHAN"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-background transition-colors flex items-center gap-1.5"
+                title="GitHub"
+              >
+                <Github className="h-4 w-4" />
+                <span className="sr-only sm:not-sr-only">GitHub</span>
+              </a>
+              <a
+                href="https://www.linkedin.com/in/shaan-goswami-778729274/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-background transition-colors flex items-center gap-1.5"
+                title="LinkedIn"
+              >
+                <Linkedin className="h-4 w-4" />
+                <span className="sr-only sm:not-sr-only">LinkedIn</span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

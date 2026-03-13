@@ -18,8 +18,6 @@ import { ORDER_STATUS_LABELS } from "../../data/mockData";
 import { api } from "../../lib/api";
 import OwnerLayout from "./OwnerLayout";
 
-const MOCK_ALL_ORDERS: any[] = [];
-
 const STATUS_COLOR_MAP: Record<
   string,
   "default" | "secondary" | "destructive" | "outline"
@@ -35,14 +33,10 @@ export default function OwnerOrders() {
   const queryClient = useQueryClient();
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
 
-  const { data: orders = MOCK_ALL_ORDERS, isLoading } = useQuery<any[]>({
+  const { data: orders = [], isLoading } = useQuery<any[]>({
     queryKey: ["owner-all-orders"],
     queryFn: async () => {
-      try {
-        return await api.get('/orders/all');
-      } catch {
-        return MOCK_ALL_ORDERS;
-      }
+      return await api.get('/orders');
     },
   });
 
@@ -65,6 +59,13 @@ export default function OwnerOrders() {
 
   return (
     <OwnerLayout title="Orders" description="Manage all customer orders">
+      <div className="flex items-start gap-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl px-4 py-3 mb-6">
+        <span className="text-amber-500 mt-0.5 shrink-0">🕐</span>
+        <p className="text-xs text-amber-700 dark:text-amber-300 font-ui leading-relaxed">
+          <strong>Data Retention Policy:</strong> Order records are automatically deleted <strong>30 days</strong> after creation as per your request.
+        </p>
+      </div>
+
       {isLoading ? (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
@@ -178,7 +179,7 @@ export default function OwnerOrders() {
                         Items ({order.items.length})
                       </div>
                       <div className="space-y-2">
-                        {order.orderItems.map((item: any, j: number) => {
+                        {order.items?.map((item: any, j: number) => {
                           const product = item.product || {};
                           return (
                             <div
@@ -207,7 +208,7 @@ export default function OwnerOrders() {
                       </div>
                       <div className="mt-3 text-xs text-muted-foreground font-ui">
                         <div className="flex flex-col gap-1">
-                          <div>Buyer: <span className="font-semibold text-foreground">{order.user?.name}</span> ({order.user?.email})</div>
+                          <div>Buyer: <span className="font-semibold text-foreground">{order.buyer?.name}</span> ({order.buyer?.email})</div>
                           <div className="truncate">Address: {order.shippingAddress?.street}, {order.shippingAddress?.city}, {order.shippingAddress?.pincode}</div>
                         </div>
                       </div>
