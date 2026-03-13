@@ -51,14 +51,14 @@ app.use('/api/upload', uploadRoutes);
 const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
     // Serve frontend build
     app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
     app.get('*', (req, res) =>
         res.sendFile(path.resolve(__dirname, '../frontend', 'dist', 'index.html'))
     );
-} else {
+} else if (!process.env.VERCEL) {
     app.get('/', (req, res) => {
         res.send('API is running...');
     });
@@ -69,6 +69,10 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+    });
+}
+
+export default app;

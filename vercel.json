@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "buildCommand": "pnpm --filter @juteit/frontend build",
+  "outputDirectory": "packages/frontend/dist",
+  "installCommand": "pnpm install",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
