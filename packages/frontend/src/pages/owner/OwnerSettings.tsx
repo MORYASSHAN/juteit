@@ -24,6 +24,7 @@ export default function OwnerSettings() {
         taxRate: 0,
         shippingCharge: 0,
         freeShippingThreshold: 0,
+        cancellationWindow: 24,
         instagramUrl: "",
         heroImageUrl: "",
         qrCodeUrl: "",
@@ -313,6 +314,17 @@ export default function OwnerSettings() {
                                         onChange={e => setForm({ ...form, freeShippingThreshold: Number(e.target.value) })}
                                         className="font-ui"
                                     />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <Label className="font-ui text-sm font-medium">Cancellation Window (Hours)</Label>
+                                    <Input
+                                        type="number"
+                                        value={form.cancellationWindow}
+                                        onChange={e => setForm({ ...form, cancellationWindow: Number(e.target.value) })}
+                                        className="font-ui"
+                                        placeholder="e.g., 24"
+                                    />
+                                    <p className="text-[10px] text-muted-foreground">Time frame for buyer to cancel after ordering.</p>
                                 </div>
                             </CardContent>
                         </Card>

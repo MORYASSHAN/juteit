@@ -15,6 +15,7 @@ export const addOrderItems = async (req, res) => {
         const settings = await Settings.findOne();
         const qrCodeUrl = settings?.qrCodeUrl || "";
         const thankYouMsg = settings?.emailThankYouMsg || "thank to order from juteit Your order";
+        const cancelWindow = settings?.cancellationWindow || 24;
 
         const order = new Order({
             buyer: req.user._id,
@@ -23,7 +24,8 @@ export const addOrderItems = async (req, res) => {
             totalProductsPrice,
             tax,
             shippingCharge,
-            totalAmount
+            totalAmount,
+            cancellationDeadline: new Date(Date.now() + cancelWindow * 60 * 60 * 1000)
         });
 
         const createdOrder = await order.save();
@@ -54,7 +56,7 @@ export const addOrderItems = async (req, res) => {
                     <h3 style="margin-top: 0; color: #34495e; border-bottom: 1px solid #dee2e6; padding-bottom: 10px;">Customer Information</h3>
                     <p style="margin: 5px 0;"><strong>Name:</strong> ${req.user.name}</p>
                     <p style="margin: 5px 0;"><strong>Email:</strong> ${req.user.email}</p>
-                    <p style="margin: 5px 0;"><strong>Phone:</strong> ${req.user.phone || 'N/A'}</p>
+                    <p style="margin: 5px 0;"><strong>Phone:</strong> ${req.user.phoneNumber || 'N/A'}</p>
                 </div>
 
                 <div style="margin-bottom: 25px;">
@@ -96,10 +98,17 @@ export const addOrderItems = async (req, res) => {
                     </div>
                 </div>
 
+                <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin: 25px 0;">
+                    <h3 style="margin-top: 0; color: #333;">Shipping & Contact Details</h3>
+                    <p style="margin: 5px 0;"><strong>Name:</strong> ${req.user.name}</p>
+                    <p style="margin: 5px 0;"><strong>Phone:</strong> ${req.user.phoneNumber || 'N/A'}</p>
+                    <p style="margin: 5px 0;"><strong>Address:</strong> ${shippingAddress.street}, ${shippingAddress.city}, ${shippingAddress.state} - ${shippingAddress.pincode}</p>
+                </div>
+
                 <div style="text-align: center; background-color: #fff9e6; border: 2px dashed #f1c40f; border-radius: 12px; padding: 30px; margin: 30px 0;">
                     <h2 style="color: #f39c12; margin-top: 0;">Complete Your Payment</h2>
-                    <p style="font-size: 16px; font-weight: bold; color: #d35400;">Please check your mail for payment purpose</p>
-                    <p>To finalize your order, please scan the QR code below to pay via UPI:</p>
+                    <p style="font-size: 16px; font-weight: bold; color: #d35400;">Please scan the QR code below for payment</p>
+                    <p>To finalize your order, please pay via UPI:</p>
                     
                     ${qrCodeUrl ? `
                     <div style="margin: 20px auto; max-width: 250px;">
@@ -113,6 +122,9 @@ export const addOrderItems = async (req, res) => {
                     
                     <p style="font-size: 14px; color: #666; margin-top: 20px;">
                         <strong>Important:</strong> After successful payment, please reply to this email with your transaction ID or a screenshot.
+                    </p>
+                    <p style="font-size: 13px; color: #e67e22; margin-top: 10px;">
+                        Note: You can cancel this order within <strong>${cancelWindow} hours</strong> if needed.
                     </p>
                 </div>
 

@@ -19,29 +19,30 @@ export const getSettings = async (req, res) => {
 // @route   PUT /api/settings
 export const updateSettings = async (req, res) => {
     try {
-        const { bankDetails, taxRate, baseShippingCharge, freeShippingThreshold, ownerEmail, instagramUrl, heroImageUrl, qrCodeUrl, emailThankYouMsg } = req.body;
+    const { bankDetails, taxRate, baseShippingCharge, freeShippingThreshold, ownerEmail, instagramUrl, heroImageUrl, qrCodeUrl, emailThankYouMsg, cancellationWindow } = req.body;
 
-        let settings = await Settings.findOne();
+    let settings = await Settings.findOne();
 
-        if (settings) {
-            settings.bankDetails = bankDetails || settings.bankDetails;
-            settings.taxRate = taxRate !== undefined ? taxRate : settings.taxRate;
-            settings.baseShippingCharge = baseShippingCharge !== undefined ? baseShippingCharge : settings.baseShippingCharge;
-            settings.freeShippingThreshold = freeShippingThreshold !== undefined ? freeShippingThreshold : settings.freeShippingThreshold;
-            settings.ownerEmail = ownerEmail || settings.ownerEmail;
-            settings.instagramUrl = instagramUrl || settings.instagramUrl;
-            settings.heroImageUrl = heroImageUrl || settings.heroImageUrl;
-            settings.qrCodeUrl = qrCodeUrl || settings.qrCodeUrl;
-            settings.emailThankYouMsg = emailThankYouMsg || settings.emailThankYouMsg;
+    if (settings) {
+        settings.bankDetails = bankDetails || settings.bankDetails;
+        settings.taxRate = taxRate !== undefined ? taxRate : settings.taxRate;
+        settings.baseShippingCharge = baseShippingCharge !== undefined ? baseShippingCharge : settings.baseShippingCharge;
+        settings.freeShippingThreshold = freeShippingThreshold !== undefined ? freeShippingThreshold : settings.freeShippingThreshold;
+        settings.ownerEmail = ownerEmail || settings.ownerEmail;
+        settings.instagramUrl = instagramUrl || settings.instagramUrl;
+        settings.heroImageUrl = heroImageUrl || settings.heroImageUrl;
+        settings.qrCodeUrl = qrCodeUrl || settings.qrCodeUrl;
+        settings.emailThankYouMsg = emailThankYouMsg || settings.emailThankYouMsg;
+        settings.cancellationWindow = cancellationWindow !== undefined ? cancellationWindow : settings.cancellationWindow;
 
-            const updatedSettings = await settings.save();
-            res.json(updatedSettings);
-        } else {
-            settings = await Settings.create({
-                bankDetails, taxRate, baseShippingCharge, freeShippingThreshold, ownerEmail, instagramUrl, heroImageUrl, qrCodeUrl, emailThankYouMsg
-            });
-            res.status(201).json(settings);
-        }
+        const updatedSettings = await settings.save();
+        res.json(updatedSettings);
+    } else {
+        settings = await Settings.create({
+            bankDetails, taxRate, baseShippingCharge, freeShippingThreshold, ownerEmail, instagramUrl, heroImageUrl, qrCodeUrl, emailThankYouMsg, cancellationWindow
+        });
+        res.status(201).json(settings);
+    }
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

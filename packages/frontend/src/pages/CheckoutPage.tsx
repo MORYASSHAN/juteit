@@ -131,6 +131,9 @@ export default function CheckoutPage() {
       const data = await api.post('/orders', orderData);
       setOrderId(data._id);
       clearCart();
+      toast.success("Order confirmed! Please check your email for payment details.", {
+        duration: 8000,
+      });
       setIsSuccess(true);
     } catch (error: any) {
       toast.error(error.message || "Failed to place order. Please try again.");
@@ -160,20 +163,25 @@ export default function CheckoutPage() {
                 >
                   <CheckCircle2 className="h-20 w-20 text-jute-success mx-auto mb-6" />
                 </motion.div>
-                <h2 className="font-display text-3xl font-bold text-foreground mb-3">
+                <h2 className="font-display text-3xl font-bold text-jute-success mb-3">
                   Order Placed Successfully! 🎉
                 </h2>
                 <p className="text-muted-foreground text-lg mb-2">
-                  Thank you for shopping at JuteIt!
+                  Thank you for shopping at JuteIt! We've received your request.
                 </p>
-                <p className="text-muted-foreground mb-1">
+                <div className="bg-jute-success/10 border border-jute-success/20 rounded-xl p-4 mb-6 inline-block">
+                   <p className="text-jute-success font-ui font-bold text-lg mb-1">
+                     Next Step: Please check your email for payment instructions.
+                   </p>
+                   <p className="text-jute-success/80 text-sm">
+                     You can cancel this order from your profile within <b>24 hours</b> if needed.
+                   </p>
+                </div>
+                <p className="text-muted-foreground mb-4">
                   Order ID:{" "}
                   <span className="font-ui font-bold text-foreground">
                     #{orderId}
                   </span>
-                </p>
-                <p className="text-lg font-bold text-jute-olive mb-8">
-                  Please check your mail for payment purpose
                 </p>
                 <div className="flex gap-3 justify-center flex-wrap">
                   <Button
