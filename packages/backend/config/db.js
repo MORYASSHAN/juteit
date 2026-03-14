@@ -17,7 +17,6 @@ const connectDB = async () => {
     if (!cached.promise) {
         mongoose.set('strictQuery', false);
         cached.promise = mongoose.connect(process.env.MONGODB_URI, {
-            bufferCommands: false,
         }).then((mongoose) => {
             console.log(`MongoDB Connected: ${mongoose.connection.host}`);
             return mongoose;
