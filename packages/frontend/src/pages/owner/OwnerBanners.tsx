@@ -127,9 +127,7 @@ export default function OwnerBanners() {
     const formData = new FormData();
     formData.append("image", file);
     try {
-      const res = await api.post("/upload/single", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-      });
+      const res = await api.post("/upload/single", formData);
       return res.url;
     } catch (err: any) {
       toast.error("Upload failed: " + err.message);

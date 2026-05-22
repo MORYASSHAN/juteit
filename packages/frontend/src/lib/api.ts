@@ -17,7 +17,9 @@ const getHeaders = (options: any = {}) => {
 
 export const api = {
     get: async (endpoint: string, params: any = {}, options: any = {}) => {
-        const url = new URL(`${API_BASE_URL}${endpoint}`, window.location.origin);
+        const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+        const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+        const url = new URL(`${baseUrl}${cleanEndpoint}`, window.location.origin);
         Object.keys(params).forEach(key => {
             if (params[key]) url.searchParams.append(key, params[key]);
         });
@@ -32,7 +34,9 @@ export const api = {
 
     post: async (endpoint: string, data: any, options: any = {}) => {
         const body = data instanceof FormData ? data : JSON.stringify(data);
-        const url = new URL(`${API_BASE_URL}${endpoint}`, window.location.origin);
+        const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+        const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+        const url = new URL(`${baseUrl}${cleanEndpoint}`, window.location.origin);
         const response = await fetch(url.toString(), {
             method: 'POST',
             ...options,
@@ -45,7 +49,9 @@ export const api = {
 
     put: async (endpoint: string, data: any, options: any = {}) => {
         const body = data instanceof FormData ? data : JSON.stringify(data);
-        const url = new URL(`${API_BASE_URL}${endpoint}`, window.location.origin);
+        const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+        const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+        const url = new URL(`${baseUrl}${cleanEndpoint}`, window.location.origin);
         const response = await fetch(url.toString(), {
             method: 'PUT',
             ...options,
@@ -57,7 +63,9 @@ export const api = {
     },
 
     delete: async (endpoint: string, options: any = {}) => {
-        const url = new URL(`${API_BASE_URL}${endpoint}`, window.location.origin);
+        const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+        const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+        const url = new URL(`${baseUrl}${cleanEndpoint}`, window.location.origin);
         const response = await fetch(url.toString(), {
             method: 'DELETE',
             ...options,

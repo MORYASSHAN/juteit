@@ -120,7 +120,8 @@ export default function CheckoutPage() {
           street: delivery.address,
           city: delivery.city,
           state: delivery.state,
-          pincode: delivery.pincode
+          pincode: delivery.pincode,
+          phoneNumber: delivery.phone
         },
         totalProductsPrice: cartTotal,
         tax: taxAmount,

@@ -193,11 +193,7 @@ export default function OwnerProducts() {
       });
 
       try {
-        const uploadData = await api.post("/upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        const uploadData = await api.post("/upload", formData);
 
         serverUrls = uploadData.urls.map(
           (url: string) => url.startsWith("http") ? url : `${import.meta.env.VITE_API_URL || "http://localhost:5000"}${url}`
@@ -300,8 +296,11 @@ export default function OwnerProducts() {
                               const url = (product.images && product.images[0]) ||
                                          (product.imageUrls && product.imageUrls[0]) ||
                                          "https://picsum.photos/seed/jute/60/60";
-                              if (url.startsWith("http") || url.startsWith("data:") || url.startsWith("/")) return url;
-                              return `${import.meta.env.VITE_API_URL || "http://localhost:5000"}${url}`;
+                              if (url.startsWith("http") || url.startsWith("data:")) return url;
+                              const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+                              const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+                              const cleanUrl = url.startsWith('/') ? url : `/${url}`;
+                              return `${cleanBaseUrl}${cleanUrl}`;
                             })()
                           }
                           alt={product.name}

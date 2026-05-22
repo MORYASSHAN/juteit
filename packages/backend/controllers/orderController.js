@@ -13,7 +13,10 @@ export const addOrderItems = async (req, res) => {
         }
 
         const settings = await Settings.findOne();
-        const qrCodeUrl = settings?.qrCodeUrl || "";
+        const rawQrUrl = settings?.qrCodeUrl || "";
+        const qrCodeUrl = (rawQrUrl && !rawQrUrl.startsWith('http')) 
+            ? `${process.env.VITE_API_URL || 'http://localhost:5000'}${rawQrUrl}` 
+            : rawQrUrl;
         const thankYouMsg = settings?.emailThankYouMsg || "thank to order from juteit Your order";
         const cancelWindow = settings?.cancellationWindow || 24;
 
@@ -56,7 +59,7 @@ export const addOrderItems = async (req, res) => {
                     <h3 style="margin-top: 0; color: #34495e; border-bottom: 1px solid #dee2e6; padding-bottom: 10px;">Customer Information</h3>
                     <p style="margin: 5px 0;"><strong>Name:</strong> ${req.user.name}</p>
                     <p style="margin: 5px 0;"><strong>Email:</strong> ${req.user.email}</p>
-                    <p style="margin: 5px 0;"><strong>Phone:</strong> ${req.user.phoneNumber || 'N/A'}</p>
+                    <p style="margin: 5px 0;"><strong>Phone:</strong> ${shippingAddress.phoneNumber || req.user.phoneNumber || 'N/A'}</p>
                 </div>
 
                 <div style="margin-bottom: 25px;">
@@ -101,7 +104,7 @@ export const addOrderItems = async (req, res) => {
                 <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin: 25px 0;">
                     <h3 style="margin-top: 0; color: #333;">Shipping & Contact Details</h3>
                     <p style="margin: 5px 0;"><strong>Name:</strong> ${req.user.name}</p>
-                    <p style="margin: 5px 0;"><strong>Phone:</strong> ${req.user.phoneNumber || 'N/A'}</p>
+                    <p style="margin: 5px 0;"><strong>Phone:</strong> ${shippingAddress.phoneNumber || req.user.phoneNumber || 'N/A'}</p>
                     <p style="margin: 5px 0;"><strong>Address:</strong> ${shippingAddress.street}, ${shippingAddress.city}, ${shippingAddress.state} - ${shippingAddress.pincode}</p>
                 </div>
 

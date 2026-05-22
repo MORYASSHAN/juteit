@@ -18,6 +18,7 @@ const orderSchema = new mongoose.Schema({
         city: String,
         state: String,
         pincode: String,
+        phoneNumber: String,
         country: { type: String, default: 'India' }
     },
     status: {
