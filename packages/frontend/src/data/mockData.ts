@@ -15,6 +15,7 @@ export const MOCK_PRODUCTS: Product[] = [
     deliveryEstimate: "3-5 business days",
     returnable: true,
     imageUrls: ["/assets/generated/product-tote-bag.dim_600x600.jpg"],
+    images: ["/assets/generated/product-tote-bag.dim_600x600.jpg"],
   },
   {
     id: "2",
@@ -30,6 +31,7 @@ export const MOCK_PRODUCTS: Product[] = [
     deliveryEstimate: "3-5 business days",
     returnable: true,
     imageUrls: ["/assets/generated/product-shopping-bag.dim_600x600.jpg"],
+    images: ["/assets/generated/product-shopping-bag.dim_600x600.jpg"],
   },
   {
     id: "3",
@@ -45,6 +47,7 @@ export const MOCK_PRODUCTS: Product[] = [
     deliveryEstimate: "5-7 business days",
     returnable: true,
     imageUrls: ["/assets/generated/product-placemat.dim_600x600.jpg"],
+    images: ["/assets/generated/product-placemat.dim_600x600.jpg"],
   },
   {
     id: "4",
@@ -60,6 +63,7 @@ export const MOCK_PRODUCTS: Product[] = [
     deliveryEstimate: "7-10 business days",
     returnable: false,
     imageUrls: ["/assets/generated/product-wall-hanging.dim_600x600.jpg"],
+    images: ["/assets/generated/product-wall-hanging.dim_600x600.jpg"],
   },
   {
     id: "5",
@@ -75,6 +79,7 @@ export const MOCK_PRODUCTS: Product[] = [
     deliveryEstimate: "5-7 business days",
     returnable: true,
     imageUrls: ["/assets/generated/product-rope-basket.dim_600x600.jpg"],
+    images: ["/assets/generated/product-rope-basket.dim_600x600.jpg"],
   },
   {
     id: "6",
@@ -90,6 +95,7 @@ export const MOCK_PRODUCTS: Product[] = [
     deliveryEstimate: "5-7 business days",
     returnable: true,
     imageUrls: ["/assets/generated/product-laptop-sleeve.dim_600x600.jpg"],
+    images: ["/assets/generated/product-laptop-sleeve.dim_600x600.jpg"],
   },
 ];
 
